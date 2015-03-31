@@ -1,0 +1,27 @@
+c:\users\travis\documents\visual studio 2012\Projects\FFXIVGearTracker\FFXIVGearTracker\bin\Debug\FFXIVGearTracker.exe.config
+c:\users\travis\documents\visual studio 2012\Projects\FFXIVGearTracker\FFXIVGearTracker\obj\Debug\FFXIVGearTracker.csprojResolveAssemblyReference.cache
+c:\users\travis\documents\visual studio 2012\Projects\FFXIVGearTracker\FFXIVGearTracker\obj\Debug\FFXIVGearTracker.Properties.Resources.resources
+c:\users\travis\documents\visual studio 2012\Projects\FFXIVGearTracker\FFXIVGearTracker\obj\Debug\FFXIVGearTracker.csproj.GenerateResource.Cache
+c:\users\travis\documents\visual studio 2012\Projects\FFXIVGearTracker\FFXIVGearTracker\bin\Debug\FFXIVGearTracker.exe
+c:\users\travis\documents\visual studio 2012\Projects\FFXIVGearTracker\FFXIVGearTracker\bin\Debug\FFXIVGearTracker.pdb
+c:\users\travis\documents\visual studio 2012\Projects\FFXIVGearTracker\FFXIVGearTracker\obj\Debug\FFXIVGearTracker.exe
+c:\users\travis\documents\visual studio 2012\Projects\FFXIVGearTracker\FFXIVGearTracker\obj\Debug\FFXIVGearTracker.pdb
+C:\Users\Travis\Documents\Visual Studio 2012\Projects\FFXIVGearTracker\FFXIVGearTracker\obj\Debug\FFXIVGearTracker.MainForm.resources
+C:\Users\Travis\Documents\Visual Studio 2012\Projects\FFXIVGearTracker\FFXIVGearTracker\bin\Debug\NCalc.dll
+C:\Users\Travis\Documents\Visual Studio 2012\Projects\FFXIVGearTracker\FFXIVGearTracker\obj\Debug\FFXIVGearTracker.AddCharacterForm.resources
+C:\Users\Travis\Documents\Visual Studio 2012\Projects\FFXIVGearTracker\FFXIVGearTracker\obj\Debug\FFXIVGearTracker.PopOutGearTableForm.resources
+G:\FFXIVGearTracker\FFXIVGearTracker\bin\Debug\FFXIVGearTracker.exe.config
+G:\FFXIVGearTracker\FFXIVGearTracker\obj\Debug\FFXIVGearTracker.exe
+G:\FFXIVGearTracker\FFXIVGearTracker\obj\Debug\FFXIVGearTracker.pdb
+C:\Users\tporth\Documents\Side Projects\FFXIVGearTracker\FFXIVGearTracker\bin\Debug\FFXIVGearTracker.exe.config
+C:\Users\tporth\Documents\Side Projects\FFXIVGearTracker\FFXIVGearTracker\bin\Debug\FFXIVGearTracker.exe
+C:\Users\tporth\Documents\Side Projects\FFXIVGearTracker\FFXIVGearTracker\bin\Debug\FFXIVGearTracker.pdb
+C:\Users\tporth\Documents\Side Projects\FFXIVGearTracker\FFXIVGearTracker\bin\Debug\NCalc.dll
+C:\Users\tporth\Documents\Side Projects\FFXIVGearTracker\FFXIVGearTracker\obj\Debug\FFXIVGearTracker.AddCharacterForm.resources
+C:\Users\tporth\Documents\Side Projects\FFXIVGearTracker\FFXIVGearTracker\obj\Debug\FFXIVGearTracker.PopOutGearTableForm.resources
+C:\Users\tporth\Documents\Side Projects\FFXIVGearTracker\FFXIVGearTracker\obj\Debug\FFXIVGearTracker.MainForm.resources
+C:\Users\tporth\Documents\Side Projects\FFXIVGearTracker\FFXIVGearTracker\obj\Debug\FFXIVGearTracker.Properties.Resources.resources
+C:\Users\tporth\Documents\Side Projects\FFXIVGearTracker\FFXIVGearTracker\obj\Debug\FFXIVGearTracker.csproj.GenerateResource.Cache
+C:\Users\tporth\Documents\Side Projects\FFXIVGearTracker\FFXIVGearTracker\obj\Debug\FFXIVGearTracker.exe
+C:\Users\tporth\Documents\Side Projects\FFXIVGearTracker\FFXIVGearTracker\obj\Debug\FFXIVGearTracker.pdb
+C:\Users\tporth\Documents\Side Projects\FFXIVGearTracker\FFXIVGearTracker\obj\Debug\FFXIVGearTracker.csprojResolveAssemblyReference.cache
