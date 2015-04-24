@@ -2690,7 +2690,7 @@ namespace FFXIVGearTracker
             tempSet.meal = new Food();
             if (!(turnLimit < Common.HighestTurn || tomeTierLimit > -1 || relicTierLimit > -1 || accReq > 341 || ownedGearOnly))
             {
-                tempSet.CalcStatWeights(j, Common.SimulateWeights);
+                tempSet.gearWeights = Calculation.CalcStatWeights(j, tempSet.totalStats, Common.SimulateWeights);
             }
             GearSet bestSet = tempSet.Clone();
             if (!mainHands.Contains(bestSet.mainHand))
@@ -2928,7 +2928,7 @@ namespace FFXIVGearTracker
                     }
                     else if (!(turnLimit < Common.HighestTurn || tomeTierLimit > -1 || relicTierLimit > -1 || accReq > 341 || ownedGearOnly))
                     {
-                        tempSet.CalcStatWeights(j, Common.SimulateWeights);
+                        tempSet.gearWeights = Calculation.CalcStatWeights(j, tempSet.totalStats, Common.SimulateWeights);
                     }
                     if (tempSet.totalStats.Value(tempSet.gearWeights) > bestSet.totalStats.Value(tempSet.gearWeights) && tempSet.totalStats.Value(bestSet.gearWeights) > bestSet.totalStats.Value(bestSet.gearWeights))
                     {
@@ -3928,7 +3928,8 @@ namespace FFXIVGearTracker
 
             if (activeChar != null)
             {
-                activeChar.currentWeights = activeChar.idealDamage[(int)activeChar.currentJob].CalcStatWeights(activeChar.currentJob, Common.SimulateWeights);
+                activeChar.idealDamage[(int)activeChar.currentJob].gearWeights = Calculation.CalcStatWeights(activeChar.currentJob, activeChar.idealDamage[(int)activeChar.currentJob].totalStats, Common.SimulateWeights);
+                activeChar.currentWeights = activeChar.idealDamage[(int)activeChar.currentJob].gearWeights;
                 weightLabel.Text = "Weights:\n" + activeChar.currentWeights.ToString(activeChar.currentJob);
                 UpdGearValDisplay((int)activeChar.currentJob);
                 PopGearValues();
@@ -3974,8 +3975,8 @@ namespace FFXIVGearTracker
 
             if (activeChar != null)
             {
-                activeChar.currentWeights = activeChar.idealDamage[(int)activeChar.currentJob].CalcStatWeights(activeChar.currentJob, Common.SimulateWeights);
-                weightLabel.Text = "Weights:\n" + activeChar.currentWeights.ToString(activeChar.currentJob);
+                activeChar.idealDamage[(int)activeChar.currentJob].gearWeights = Calculation.CalcStatWeights(activeChar.currentJob, activeChar.idealDamage[(int)activeChar.currentJob].totalStats, Common.SimulateWeights);
+                activeChar.currentWeights = activeChar.idealDamage[(int)activeChar.currentJob].gearWeights;
                 UpdGearValDisplay((int)activeChar.currentJob);
                 PopGearValues();
                 CustomEvents.UpdateCharacter(activeChar);

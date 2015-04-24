@@ -25,3 +25,19 @@ C:\Users\tporth\Documents\Side Projects\FFXIVGearTracker\FFXIVGearTracker\obj\De
 C:\Users\tporth\Documents\Side Projects\FFXIVGearTracker\FFXIVGearTracker\obj\Debug\FFXIVGearTracker.exe
 C:\Users\tporth\Documents\Side Projects\FFXIVGearTracker\FFXIVGearTracker\obj\Debug\FFXIVGearTracker.pdb
 C:\Users\tporth\Documents\Side Projects\FFXIVGearTracker\FFXIVGearTracker\obj\Debug\FFXIVGearTracker.csprojResolveAssemblyReference.cache
+C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIVGearTracker\bin\Debug\FFXIVGearTracker.exe.config
+C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIVGearTracker\obj\Debug\FFXIVGearTracker.exe
+C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIVGearTracker\obj\Debug\FFXIVGearTracker.pdb
+C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIVGearTracker\bin\Debug\FFXIVGearTracker.exe
+C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIVGearTracker\bin\Debug\FFXIVGearTracker.pdb
+C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIVGearTracker\bin\Debug\NCalc.dll
+C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIVGearTracker\obj\Debug\FFXIVGearTracker.csprojResolveAssemblyReference.cache
+C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIVGearTracker\obj\Debug\FFXIVGearTracker.AddCharacterForm.resources
+C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIVGearTracker\obj\Debug\FFXIVGearTracker.PopOutGearTableForm.resources
+C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIVGearTracker\obj\Debug\FFXIVGearTracker.MainForm.resources
+C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIVGearTracker\obj\Debug\FFXIVGearTracker.Properties.Resources.resources
+C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIVGearTracker\obj\Debug\FFXIVGearTracker.csproj.GenerateResource.Cache
+C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIVGearTracker\bin\Debug\FFXIV.GearTracking.Common.dll
+C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIVGearTracker\bin\Debug\FFXIV.GearTracking.Simulation.dll
+C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIVGearTracker\bin\Debug\FFXIV.GearTracking.Common.pdb
+C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIVGearTracker\bin\Debug\FFXIV.GearTracking.Simulation.pdb

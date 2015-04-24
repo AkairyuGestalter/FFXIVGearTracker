@@ -53,14 +53,8 @@
     <Compile Include="AddCharacterForm.Designer.cs">
       <DependentUpon>AddCharacterForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="BLMSimulation.cs" />
-    <Compile Include="BRDSimulation.cs" />
-    <Compile Include="Character.cs" />
-    <Compile Include="Common.cs" />
     <Compile Include="CustomEvents.cs" />
     <Compile Include="ExportImport.cs" />
-    <Compile Include="Food.cs" />
-    <Compile Include="Simulation.cs" />
     <Compile Include="PopOutGearTableForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -73,11 +67,8 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="GearSet.cs" />
-    <Compile Include="Item.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SMNSimulation.cs" />
     <EmbeddedResource Include="AddCharacterForm.resx">
       <DependentUpon>AddCharacterForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -111,6 +102,16 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FFXIV.GearTracking.Common\FFXIV.GearTracking.Common.csproj">
+      <Project>{15eb3dca-4ae2-49d0-9e20-08a8d4396a01}</Project>
+      <Name>FFXIV.GearTracking.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FFXIV.GearTracking.Simulation\FFXIV.GearTracking.Simulation.csproj">
+      <Project>{d7df8843-7eda-47cd-aecc-fda110ecf00f}</Project>
+      <Name>FFXIV.GearTracking.Simulation</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

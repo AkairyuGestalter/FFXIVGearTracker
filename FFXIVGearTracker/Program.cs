@@ -26,6 +26,7 @@ namespace FFXIVGearTracker
 				Application.SetCompatibleTextRenderingDefault(false);
 
 				bool dataLoaded = false;
+                
 				if (File.Exists(Properties.Settings.Default.SaveFile))
 				{
 					dataLoaded = Common.Load(Properties.Settings.Default.SaveFile);
