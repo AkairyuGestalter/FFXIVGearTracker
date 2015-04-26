@@ -47,9 +47,9 @@
     <Compile Include="SMNSimulation.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FFXIV.GearTracking.Common\FFXIV.GearTracking.Common.csproj">
+    <ProjectReference Include="..\FFXIV.GearTracking.Common\FFXIV.GearTracking.Core.csproj">
       <Project>{15eb3dca-4ae2-49d0-9e20-08a8d4396a01}</Project>
-      <Name>FFXIV.GearTracking.Common</Name>
+      <Name>FFXIV.GearTracking.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

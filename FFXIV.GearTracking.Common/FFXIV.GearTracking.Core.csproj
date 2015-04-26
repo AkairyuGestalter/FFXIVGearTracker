@@ -7,8 +7,8 @@
     <ProjectGuid>{15EB3DCA-4AE2-49D0-9E20-08A8D4396A01}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FFXIV.GearTracking.Common</RootNamespace>
-    <AssemblyName>FFXIV.GearTracking.Common</AssemblyName>
+    <RootNamespace>FFXIV.GearTracking.Core</RootNamespace>
+    <AssemblyName>FFXIV.GearTracking.Core</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -32,6 +32,9 @@
   <ItemGroup>
     <Reference Include="NCalc">
       <HintPath>..\NCalc.dll</HintPath>
+    </Reference>
+    <Reference Include="ObservableDictionary">
+      <HintPath>..\ObservableDictionary.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FFXIVGearTracker
+using FFXIV.GearTracking.Core;
+
+namespace FFXIV.GearTracking.Simulation
 {
 	class SMNSimulation : Simulation
 	{
@@ -371,7 +373,7 @@ namespace FFXIVGearTracker
 			}
 			if (baseSkillDmg < 0)
 			{
-				baseSkillDmg = Common.CalculateDamage(stats) * 1.3; //Maim and Mend
+				baseSkillDmg = Core.Common.CalculateDamage(stats) * 1.3; //Maim and Mend
 			}
 			double spellDamage = baseSkillDmg * potency / 100.0;
 			return spellDamage;

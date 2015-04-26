@@ -13,8 +13,10 @@ using System.Xml.Serialization;
 using System.IO;
 
 using NCalc;
+using FFXIV.GearTracking.Core;
+using FFXIV.GearTracking.Simulation;
 
-namespace FFXIVGearTracker
+namespace FFXIV.GearTracking.WinForms
 {
     public partial class MainForm : Form
     {
@@ -136,7 +138,7 @@ namespace FFXIVGearTracker
         void MainForm_Load(object sender, EventArgs e)
         {
             #region CharacterGearTab
-            GearDisplayGridView.Columns["Item"].ValueType = typeof(FFXIVGearTracker.Item);
+            GearDisplayGridView.Columns["Item"].ValueType = typeof(Item);
             if (CharacterSelect.Items.Count > 0)
             {
                 CharacterSelect.SelectedIndex = 0;
@@ -532,7 +534,7 @@ namespace FFXIVGearTracker
                 {
                     try
                     {
-                        Item tempItem = (FFXIVGearTracker.Item)row.Cells["Item"].Value;
+                        Item tempItem = (Item)row.Cells["Item"].Value;
                         Item currentItem = new Item();
                         switch (tempItem.equipSlot)
                         {
@@ -1213,9 +1215,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.meal != (FFXIVGearTracker.Food)IdealFood.SelectedItem)
+            if (activeSet.meal != (Food)IdealFood.SelectedItem)
             {
-                activeSet.meal = (FFXIVGearTracker.Food)IdealFood.SelectedItem;
+                activeSet.meal = (Food)IdealFood.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 /*StatWeights idealWeights = activeSet.CalcStatWeights(activeChar.currentJob, Common.SimulateWeights);
@@ -1249,9 +1251,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.meal != (FFXIVGearTracker.Food)IdealFoodA.SelectedItem)
+            if (activeSet.meal != (Food)IdealFoodA.SelectedItem)
             {
-                activeSet.meal = (FFXIVGearTracker.Food)IdealFoodA.SelectedItem;
+                activeSet.meal = (Food)IdealFoodA.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 IdealValueA.Text = activeSet.totalStats.Value(activeChar.currentWeights).ToString();
@@ -1272,9 +1274,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.meal != (FFXIVGearTracker.Food)IdealFoodB.SelectedItem)
+            if (activeSet.meal != (Food)IdealFoodB.SelectedItem)
             {
-                activeSet.meal = (FFXIVGearTracker.Food)IdealFoodB.SelectedItem;
+                activeSet.meal = (Food)IdealFoodB.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 IdealValueB.Text = activeSet.totalStats.Value(activeChar.currentWeights).ToString();
@@ -1295,9 +1297,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.meal != (FFXIVGearTracker.Food)OwnedFood.SelectedItem)
+            if (activeSet.meal != (Food)OwnedFood.SelectedItem)
             {
-                activeSet.meal = (FFXIVGearTracker.Food)OwnedFood.SelectedItem;
+                activeSet.meal = (Food)OwnedFood.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 OwnedValue.Text = activeSet.totalStats.Value(activeChar.currentWeights).ToString();
@@ -1319,9 +1321,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.meal != (FFXIVGearTracker.Food)OwnedFoodA.SelectedItem)
+            if (activeSet.meal != (Food)OwnedFoodA.SelectedItem)
             {
-                activeSet.meal = (FFXIVGearTracker.Food)OwnedFoodA.SelectedItem;
+                activeSet.meal = (Food)OwnedFoodA.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 OwnedValueA.Text = activeSet.totalStats.Value(activeChar.currentWeights).ToString();
@@ -1342,9 +1344,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.meal != (FFXIVGearTracker.Food)OwnedFoodB.SelectedItem)
+            if (activeSet.meal != (Food)OwnedFoodB.SelectedItem)
             {
-                activeSet.meal = (FFXIVGearTracker.Food)OwnedFoodB.SelectedItem;
+                activeSet.meal = (Food)OwnedFoodB.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 OwnedValueB.Text = activeSet.totalStats.Value(activeChar.currentWeights).ToString();
@@ -1365,9 +1367,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.meal != (FFXIVGearTracker.Food)ProgressionFood.SelectedItem)
+            if (activeSet.meal != (Food)ProgressionFood.SelectedItem)
             {
-                activeSet.meal = (FFXIVGearTracker.Food)ProgressionFood.SelectedItem;
+                activeSet.meal = (Food)ProgressionFood.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 ProgressionValue.Text = activeSet.totalStats.Value(activeChar.currentWeights).ToString();
@@ -1388,9 +1390,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.meal != (FFXIVGearTracker.Food)ProgressionFoodA.SelectedItem)
+            if (activeSet.meal != (Food)ProgressionFoodA.SelectedItem)
             {
-                activeSet.meal = (FFXIVGearTracker.Food)ProgressionFoodA.SelectedItem;
+                activeSet.meal = (Food)ProgressionFoodA.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 ProgressionValueA.Text = activeSet.totalStats.Value(activeChar.currentWeights).ToString();
@@ -1411,9 +1413,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.meal != (FFXIVGearTracker.Food)ProgressionFoodB.SelectedItem)
+            if (activeSet.meal != (Food)ProgressionFoodB.SelectedItem)
             {
-                activeSet.meal = (FFXIVGearTracker.Food)ProgressionFoodB.SelectedItem;
+                activeSet.meal = (Food)ProgressionFoodB.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 ProgressionValueB.Text = activeSet.totalStats.Value(activeChar.currentWeights).ToString();
@@ -1434,9 +1436,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.mainHand != (FFXIVGearTracker.Item)CurrentWeapon.SelectedItem)
+            if (activeSet.mainHand != (Item)CurrentWeapon.SelectedItem)
             {
-                activeSet.mainHand = (FFXIVGearTracker.Item)CurrentWeapon.SelectedItem;
+                activeSet.mainHand = (Item)CurrentWeapon.SelectedItem;
                 if (activeSet.mainHand.twoHand)
                 {
                     activeSet.offHand = new Item();
@@ -1468,9 +1470,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.head != (FFXIVGearTracker.Item)CurrentHead.SelectedItem)
+            if (activeSet.head != (Item)CurrentHead.SelectedItem)
             {
-                activeSet.head = (FFXIVGearTracker.Item)CurrentHead.SelectedItem;
+                activeSet.head = (Item)CurrentHead.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 activeChar.currentDamage[(int)activeChar.currentJob] = activeSet;
@@ -1492,9 +1494,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.body != (FFXIVGearTracker.Item)CurrentBody.SelectedItem)
+            if (activeSet.body != (Item)CurrentBody.SelectedItem)
             {
-                activeSet.body = (FFXIVGearTracker.Item)CurrentBody.SelectedItem;
+                activeSet.body = (Item)CurrentBody.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 activeChar.currentDamage[(int)activeChar.currentJob] = activeSet;
@@ -1516,9 +1518,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.hands != (FFXIVGearTracker.Item)CurrentHands.SelectedItem)
+            if (activeSet.hands != (Item)CurrentHands.SelectedItem)
             {
-                activeSet.hands = (FFXIVGearTracker.Item)CurrentHands.SelectedItem;
+                activeSet.hands = (Item)CurrentHands.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 activeChar.currentDamage[(int)activeChar.currentJob] = activeSet;
@@ -1540,9 +1542,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.waist != (FFXIVGearTracker.Item)CurrentWaist.SelectedItem)
+            if (activeSet.waist != (Item)CurrentWaist.SelectedItem)
             {
-                activeSet.waist = (FFXIVGearTracker.Item)CurrentWaist.SelectedItem;
+                activeSet.waist = (Item)CurrentWaist.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 activeChar.currentDamage[(int)activeChar.currentJob] = activeSet;
@@ -1564,9 +1566,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.legs != (FFXIVGearTracker.Item)CurrentLegs.SelectedItem)
+            if (activeSet.legs != (Item)CurrentLegs.SelectedItem)
             {
-                activeSet.legs = (FFXIVGearTracker.Item)CurrentLegs.SelectedItem;
+                activeSet.legs = (Item)CurrentLegs.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 activeChar.currentDamage[(int)activeChar.currentJob] = activeSet;
@@ -1588,9 +1590,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.feet != (FFXIVGearTracker.Item)CurrentFeet.SelectedItem)
+            if (activeSet.feet != (Item)CurrentFeet.SelectedItem)
             {
-                activeSet.feet = (FFXIVGearTracker.Item)CurrentFeet.SelectedItem;
+                activeSet.feet = (Item)CurrentFeet.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 activeChar.currentDamage[(int)activeChar.currentJob] = activeSet;
@@ -1612,9 +1614,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.offHand != (FFXIVGearTracker.Item)CurrentOffHand.SelectedItem)
+            if (activeSet.offHand != (Item)CurrentOffHand.SelectedItem)
             {
-                activeSet.offHand = (FFXIVGearTracker.Item)CurrentOffHand.SelectedItem;
+                activeSet.offHand = (Item)CurrentOffHand.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 activeChar.currentDamage[(int)activeChar.currentJob] = activeSet;
@@ -1636,9 +1638,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.neck != (FFXIVGearTracker.Item)CurrentNeck.SelectedItem)
+            if (activeSet.neck != (Item)CurrentNeck.SelectedItem)
             {
-                activeSet.neck = (FFXIVGearTracker.Item)CurrentNeck.SelectedItem;
+                activeSet.neck = (Item)CurrentNeck.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 activeChar.currentDamage[(int)activeChar.currentJob] = activeSet;
@@ -1660,9 +1662,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.ears != (FFXIVGearTracker.Item)CurrentEarring.SelectedItem)
+            if (activeSet.ears != (Item)CurrentEarring.SelectedItem)
             {
-                activeSet.ears = (FFXIVGearTracker.Item)CurrentEarring.SelectedItem;
+                activeSet.ears = (Item)CurrentEarring.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 activeChar.currentDamage[(int)activeChar.currentJob] = activeSet;
@@ -1684,9 +1686,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.wrists != (FFXIVGearTracker.Item)CurrentWrists.SelectedItem)
+            if (activeSet.wrists != (Item)CurrentWrists.SelectedItem)
             {
-                activeSet.wrists = (FFXIVGearTracker.Item)CurrentWrists.SelectedItem;
+                activeSet.wrists = (Item)CurrentWrists.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 activeChar.currentDamage[(int)activeChar.currentJob] = activeSet;
@@ -1708,13 +1710,13 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.leftRing != (FFXIVGearTracker.Item)CurrentLRing.SelectedItem)
+            if (activeSet.leftRing != (Item)CurrentLRing.SelectedItem)
             {
                 if (!CurrentRRing.Items.Contains(activeSet.leftRing) && !string.IsNullOrWhiteSpace(activeSet.leftRing.name))
                 {
                     CurrentRRing.Items.Add(activeSet.leftRing);
                 }
-                activeSet.leftRing = (FFXIVGearTracker.Item)CurrentLRing.SelectedItem;
+                activeSet.leftRing = (Item)CurrentLRing.SelectedItem;
                 if (activeSet.leftRing.unique && CurrentRRing.Items.Contains(activeSet.leftRing))
                 {
                     CurrentRRing.Items.Remove(activeSet.leftRing);
@@ -1740,13 +1742,13 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.rightRing != (FFXIVGearTracker.Item)CurrentRRing.SelectedItem)
+            if (activeSet.rightRing != (Item)CurrentRRing.SelectedItem)
             {
                 if (!CurrentLRing.Items.Contains(activeSet.rightRing) && !string.IsNullOrWhiteSpace(activeSet.rightRing.name))
                 {
                     CurrentLRing.Items.Add(activeSet.rightRing);
                 }
-                activeSet.rightRing = (FFXIVGearTracker.Item)CurrentRRing.SelectedItem;
+                activeSet.rightRing = (Item)CurrentRRing.SelectedItem;
                 if (activeSet.rightRing.unique && CurrentLRing.Items.Contains(activeSet.rightRing))
                 {
                     CurrentLRing.Items.Remove(activeSet.rightRing);
@@ -1772,9 +1774,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.meal != (FFXIVGearTracker.Food)CurrentFood.SelectedItem)
+            if (activeSet.meal != (Food)CurrentFood.SelectedItem)
             {
-                activeSet.meal = (FFXIVGearTracker.Food)CurrentFood.SelectedItem;
+                activeSet.meal = (Food)CurrentFood.SelectedItem;
                 activeSet.CalcTotalStats();
                 activeChar.currentDamage[(int)activeChar.currentJob] = activeSet;
                 toolTip1.SetToolTip(CurrentDamageGroup, activeSet.totalStats.ToString());
@@ -1795,9 +1797,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.mainHand != (FFXIVGearTracker.Item)CurrentWeaponA.SelectedItem)
+            if (activeSet.mainHand != (Item)CurrentWeaponA.SelectedItem)
             {
-                activeSet.mainHand = (FFXIVGearTracker.Item)CurrentWeaponA.SelectedItem;
+                activeSet.mainHand = (Item)CurrentWeaponA.SelectedItem;
                 if (activeSet.mainHand.twoHand)
                 {
                     activeSet.offHand = new Item();
@@ -1809,7 +1811,7 @@ namespace FFXIVGearTracker
                 {
                     CurrentOffHandA.Enabled = true;
                 }
-                activeSet.mainHand = (FFXIVGearTracker.Item)CurrentWeaponA.SelectedItem;
+                activeSet.mainHand = (Item)CurrentWeaponA.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 CurrentValueA.Text = activeSet.totalStats.Value(activeChar.currentWeights).ToString();
@@ -1830,9 +1832,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.head != (FFXIVGearTracker.Item)CurrentHeadA.SelectedItem)
+            if (activeSet.head != (Item)CurrentHeadA.SelectedItem)
             {
-                activeSet.head = (FFXIVGearTracker.Item)CurrentHeadA.SelectedItem;
+                activeSet.head = (Item)CurrentHeadA.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 CurrentValueA.Text = activeSet.totalStats.Value(activeChar.currentWeights).ToString();
@@ -1853,9 +1855,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.body != (FFXIVGearTracker.Item)CurrentBodyA.SelectedItem)
+            if (activeSet.body != (Item)CurrentBodyA.SelectedItem)
             {
-                activeSet.body = (FFXIVGearTracker.Item)CurrentBodyA.SelectedItem;
+                activeSet.body = (Item)CurrentBodyA.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 CurrentValueA.Text = activeSet.totalStats.Value(activeChar.currentWeights).ToString();
@@ -1876,9 +1878,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.hands != (FFXIVGearTracker.Item)CurrentHandsA.SelectedItem)
+            if (activeSet.hands != (Item)CurrentHandsA.SelectedItem)
             {
-                activeSet.hands = (FFXIVGearTracker.Item)CurrentHandsA.SelectedItem;
+                activeSet.hands = (Item)CurrentHandsA.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 CurrentValueA.Text = activeSet.totalStats.Value(activeChar.currentWeights).ToString();
@@ -1899,9 +1901,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.waist != (FFXIVGearTracker.Item)CurrentWaistA.SelectedItem)
+            if (activeSet.waist != (Item)CurrentWaistA.SelectedItem)
             {
-                activeSet.waist = (FFXIVGearTracker.Item)CurrentWaistA.SelectedItem;
+                activeSet.waist = (Item)CurrentWaistA.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 CurrentValueA.Text = activeSet.totalStats.Value(activeChar.currentWeights).ToString();
@@ -1922,9 +1924,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.legs != (FFXIVGearTracker.Item)CurrentLegsA.SelectedItem)
+            if (activeSet.legs != (Item)CurrentLegsA.SelectedItem)
             {
-                activeSet.legs = (FFXIVGearTracker.Item)CurrentLegsA.SelectedItem;
+                activeSet.legs = (Item)CurrentLegsA.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 CurrentValueA.Text = activeSet.totalStats.Value(activeChar.currentWeights).ToString();
@@ -1945,9 +1947,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.feet != (FFXIVGearTracker.Item)CurrentFeetA.SelectedItem)
+            if (activeSet.feet != (Item)CurrentFeetA.SelectedItem)
             {
-                activeSet.feet = (FFXIVGearTracker.Item)CurrentFeetA.SelectedItem;
+                activeSet.feet = (Item)CurrentFeetA.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 CurrentValueA.Text = activeSet.totalStats.Value(activeChar.currentWeights).ToString();
@@ -1968,9 +1970,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.offHand != (FFXIVGearTracker.Item)CurrentOffHandA.SelectedItem)
+            if (activeSet.offHand != (Item)CurrentOffHandA.SelectedItem)
             {
-                activeSet.offHand = (FFXIVGearTracker.Item)CurrentOffHandA.SelectedItem;
+                activeSet.offHand = (Item)CurrentOffHandA.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 CurrentValueA.Text = activeSet.totalStats.Value(activeChar.currentWeights).ToString();
@@ -1991,9 +1993,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.neck != (FFXIVGearTracker.Item)CurrentNeckA.SelectedItem)
+            if (activeSet.neck != (Item)CurrentNeckA.SelectedItem)
             {
-                activeSet.neck = (FFXIVGearTracker.Item)CurrentNeckA.SelectedItem;
+                activeSet.neck = (Item)CurrentNeckA.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 CurrentValueA.Text = activeSet.totalStats.Value(activeChar.currentWeights).ToString();
@@ -2014,9 +2016,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.ears != (FFXIVGearTracker.Item)CurrentEarringA.SelectedItem)
+            if (activeSet.ears != (Item)CurrentEarringA.SelectedItem)
             {
-                activeSet.ears = (FFXIVGearTracker.Item)CurrentEarringA.SelectedItem;
+                activeSet.ears = (Item)CurrentEarringA.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 CurrentValueA.Text = activeSet.totalStats.Value(activeChar.currentWeights).ToString();
@@ -2037,9 +2039,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.wrists != (FFXIVGearTracker.Item)CurrentWristsA.SelectedItem)
+            if (activeSet.wrists != (Item)CurrentWristsA.SelectedItem)
             {
-                activeSet.wrists = (FFXIVGearTracker.Item)CurrentWristsA.SelectedItem;
+                activeSet.wrists = (Item)CurrentWristsA.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 CurrentValueA.Text = activeSet.totalStats.Value(activeChar.currentWeights).ToString();
@@ -2060,13 +2062,13 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.leftRing != (FFXIVGearTracker.Item)CurrentLRingA.SelectedItem)
+            if (activeSet.leftRing != (Item)CurrentLRingA.SelectedItem)
             {
                 if (!CurrentRRingA.Items.Contains(activeSet.leftRing) && !string.IsNullOrWhiteSpace(activeSet.leftRing.name))
                 {
                     CurrentRRingA.Items.Add(activeSet.leftRing);
                 }
-                activeSet.leftRing = (FFXIVGearTracker.Item)CurrentLRingA.SelectedItem;
+                activeSet.leftRing = (Item)CurrentLRingA.SelectedItem;
                 if (activeSet.leftRing.unique && CurrentRRingA.Items.Contains(activeSet.leftRing))
                 {
                     CurrentRRingA.Items.Remove(activeSet.leftRing);
@@ -2091,13 +2093,13 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.rightRing != (FFXIVGearTracker.Item)CurrentRRingA.SelectedItem)
+            if (activeSet.rightRing != (Item)CurrentRRingA.SelectedItem)
             {
                 if (!CurrentLRingA.Items.Contains(activeSet.rightRing) && !string.IsNullOrWhiteSpace(activeSet.rightRing.name))
                 {
                     CurrentLRingA.Items.Add(activeSet.rightRing);
                 }
-                activeSet.rightRing = (FFXIVGearTracker.Item)CurrentRRingA.SelectedItem;
+                activeSet.rightRing = (Item)CurrentRRingA.SelectedItem;
                 if (activeSet.rightRing.unique && CurrentLRingA.Items.Contains(activeSet.rightRing))
                 {
                     CurrentLRingA.Items.Remove(activeSet.rightRing);
@@ -2122,9 +2124,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.meal != (FFXIVGearTracker.Food)CurrentFoodA.SelectedItem)
+            if (activeSet.meal != (Food)CurrentFoodA.SelectedItem)
             {
-                activeSet.meal = (FFXIVGearTracker.Food)CurrentFoodA.SelectedItem;
+                activeSet.meal = (Food)CurrentFoodA.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 CurrentValueA.Text = activeSet.totalStats.Value(activeChar.currentWeights).ToString();
@@ -2145,9 +2147,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.mainHand != (FFXIVGearTracker.Item)CurrentWeaponB.SelectedItem)
+            if (activeSet.mainHand != (Item)CurrentWeaponB.SelectedItem)
             {
-                activeSet.mainHand = (FFXIVGearTracker.Item)CurrentWeaponB.SelectedItem;
+                activeSet.mainHand = (Item)CurrentWeaponB.SelectedItem;
                 if (activeSet.mainHand.twoHand)
                 {
                     activeSet.offHand = new Item();
@@ -2158,7 +2160,7 @@ namespace FFXIVGearTracker
                 {
                     CurrentOffHandB.Enabled = true;
                 }
-                activeSet.mainHand = (FFXIVGearTracker.Item)CurrentWeaponB.SelectedItem;
+                activeSet.mainHand = (Item)CurrentWeaponB.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 CurrentValueB.Text = activeSet.totalStats.Value(activeChar.currentWeights).ToString();
@@ -2179,9 +2181,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.head != (FFXIVGearTracker.Item)CurrentHeadB.SelectedItem)
+            if (activeSet.head != (Item)CurrentHeadB.SelectedItem)
             {
-                activeSet.head = (FFXIVGearTracker.Item)CurrentHeadB.SelectedItem;
+                activeSet.head = (Item)CurrentHeadB.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 CurrentValueB.Text = activeSet.totalStats.Value(activeChar.currentWeights).ToString();
@@ -2202,9 +2204,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.body != (FFXIVGearTracker.Item)CurrentBodyB.SelectedItem)
+            if (activeSet.body != (Item)CurrentBodyB.SelectedItem)
             {
-                activeSet.body = (FFXIVGearTracker.Item)CurrentBodyB.SelectedItem;
+                activeSet.body = (Item)CurrentBodyB.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 CurrentValueB.Text = activeSet.totalStats.Value(activeChar.currentWeights).ToString();
@@ -2225,9 +2227,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.hands != (FFXIVGearTracker.Item)CurrentHandsB.SelectedItem)
+            if (activeSet.hands != (Item)CurrentHandsB.SelectedItem)
             {
-                activeSet.hands = (FFXIVGearTracker.Item)CurrentHandsB.SelectedItem;
+                activeSet.hands = (Item)CurrentHandsB.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 CurrentValueB.Text = activeSet.totalStats.Value(activeChar.currentWeights).ToString();
@@ -2248,9 +2250,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.waist != (FFXIVGearTracker.Item)CurrentWaistB.SelectedItem)
+            if (activeSet.waist != (Item)CurrentWaistB.SelectedItem)
             {
-                activeSet.waist = (FFXIVGearTracker.Item)CurrentWaistB.SelectedItem;
+                activeSet.waist = (Item)CurrentWaistB.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 CurrentValueB.Text = activeSet.totalStats.Value(activeChar.currentWeights).ToString();
@@ -2271,9 +2273,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.legs != (FFXIVGearTracker.Item)CurrentLegsB.SelectedItem)
+            if (activeSet.legs != (Item)CurrentLegsB.SelectedItem)
             {
-                activeSet.legs = (FFXIVGearTracker.Item)CurrentLegsB.SelectedItem;
+                activeSet.legs = (Item)CurrentLegsB.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 CurrentValueB.Text = activeSet.totalStats.Value(activeChar.currentWeights).ToString();
@@ -2294,9 +2296,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.feet != (FFXIVGearTracker.Item)CurrentFeetB.SelectedItem)
+            if (activeSet.feet != (Item)CurrentFeetB.SelectedItem)
             {
-                activeSet.feet = (FFXIVGearTracker.Item)CurrentFeetB.SelectedItem;
+                activeSet.feet = (Item)CurrentFeetB.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 CurrentValueB.Text = activeSet.totalStats.Value(activeChar.currentWeights).ToString();
@@ -2317,9 +2319,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.offHand != (FFXIVGearTracker.Item)CurrentOffHandB.SelectedItem)
+            if (activeSet.offHand != (Item)CurrentOffHandB.SelectedItem)
             {
-                activeSet.offHand = (FFXIVGearTracker.Item)CurrentOffHandB.SelectedItem;
+                activeSet.offHand = (Item)CurrentOffHandB.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 CurrentValueB.Text = activeSet.totalStats.Value(activeChar.currentWeights).ToString();
@@ -2340,9 +2342,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.neck != (FFXIVGearTracker.Item)CurrentNeckB.SelectedItem)
+            if (activeSet.neck != (Item)CurrentNeckB.SelectedItem)
             {
-                activeSet.neck = (FFXIVGearTracker.Item)CurrentNeckB.SelectedItem;
+                activeSet.neck = (Item)CurrentNeckB.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 CurrentValueB.Text = activeSet.totalStats.Value(activeChar.currentWeights).ToString();
@@ -2363,9 +2365,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.ears != (FFXIVGearTracker.Item)CurrentEarringB.SelectedItem)
+            if (activeSet.ears != (Item)CurrentEarringB.SelectedItem)
             {
-                activeSet.ears = (FFXIVGearTracker.Item)CurrentEarringB.SelectedItem;
+                activeSet.ears = (Item)CurrentEarringB.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 CurrentValueB.Text = activeSet.totalStats.Value(activeChar.currentWeights).ToString();
@@ -2386,9 +2388,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.wrists != (FFXIVGearTracker.Item)CurrentWristsB.SelectedItem)
+            if (activeSet.wrists != (Item)CurrentWristsB.SelectedItem)
             {
-                activeSet.wrists = (FFXIVGearTracker.Item)CurrentWristsB.SelectedItem;
+                activeSet.wrists = (Item)CurrentWristsB.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 CurrentValueB.Text = activeSet.totalStats.Value(activeChar.currentWeights).ToString();
@@ -2409,13 +2411,13 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.leftRing != (FFXIVGearTracker.Item)CurrentLRingB.SelectedItem)
+            if (activeSet.leftRing != (Item)CurrentLRingB.SelectedItem)
             {
                 if (!CurrentRRingB.Items.Contains(activeSet.leftRing) && !string.IsNullOrWhiteSpace(activeSet.leftRing.name))
                 {
                     CurrentRRingB.Items.Add(activeSet.leftRing);
                 }
-                activeSet.leftRing = (FFXIVGearTracker.Item)CurrentLRingB.SelectedItem;
+                activeSet.leftRing = (Item)CurrentLRingB.SelectedItem;
                 if (activeSet.leftRing.unique && CurrentRRingB.Items.Contains(activeSet.leftRing))
                 {
                     CurrentRRingB.Items.Remove(activeSet.leftRing);
@@ -2440,13 +2442,13 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.rightRing != (FFXIVGearTracker.Item)CurrentRRingB.SelectedItem)
+            if (activeSet.rightRing != (Item)CurrentRRingB.SelectedItem)
             {
                 if (!CurrentLRingB.Items.Contains(activeSet.rightRing) && !string.IsNullOrWhiteSpace(activeSet.rightRing.name))
                 {
                     CurrentLRingB.Items.Add(activeSet.rightRing);
                 }
-                activeSet.rightRing = (FFXIVGearTracker.Item)CurrentRRingB.SelectedItem;
+                activeSet.rightRing = (Item)CurrentRRingB.SelectedItem;
                 if (activeSet.rightRing.unique && CurrentLRingB.Items.Contains(activeSet.rightRing))
                 {
                     CurrentLRingB.Items.Remove(activeSet.rightRing);
@@ -2471,9 +2473,9 @@ namespace FFXIVGearTracker
             {
                 activeSet = new GearSet(activeChar.baseStats[(int)activeChar.currentJob]);
             }
-            if (activeSet.meal != (FFXIVGearTracker.Food)CurrentFoodB.SelectedItem)
+            if (activeSet.meal != (Food)CurrentFoodB.SelectedItem)
             {
-                activeSet.meal = (FFXIVGearTracker.Food)CurrentFoodB.SelectedItem;
+                activeSet.meal = (Food)CurrentFoodB.SelectedItem;
                 activeSet.CalcGearStats();
                 activeSet.CalcTotalStats();
                 CurrentValueB.Text = activeSet.totalStats.Value(activeChar.currentWeights).ToString();
@@ -3005,7 +3007,7 @@ namespace FFXIVGearTracker
                 }
                 foreach (Item i in heads)
                 {
-                    if (((needAcc && i.itemStats.acc > tempSet.head.itemStats.acc) || (needSpeed && i.itemStats.speed > tempSet.head.itemStats.speed)) 
+                    if (((needAcc && i.itemStats.acc > tempSet.head.itemStats.acc) || (needSpeed && i.itemStats.speed > tempSet.head.itemStats.speed))
                         && !optItems.Contains(i) && (maxiLevel - i.itemStats.itemLevel < 20 || ownedGearOnly))
                     {
                         optItems.Add(i);
@@ -3037,7 +3039,7 @@ namespace FFXIVGearTracker
                 }
                 foreach (Item i in legs)
                 {
-                    if (((needAcc && i.itemStats.acc > tempSet.legs.itemStats.acc) || (needSpeed && i.itemStats.speed > tempSet.legs.itemStats.speed)) 
+                    if (((needAcc && i.itemStats.acc > tempSet.legs.itemStats.acc) || (needSpeed && i.itemStats.speed > tempSet.legs.itemStats.speed))
                         && !optItems.Contains(i) && (maxiLevel - i.itemStats.itemLevel < 20 || ownedGearOnly))
                     {
                         optItems.Add(i);
@@ -3614,22 +3616,18 @@ namespace FFXIVGearTracker
                     {
                         if (Common.gearDictionary.ContainsKey(i.name))
                         {
-                            Item i2;
-                            bool itemFound = Common.gearDictionary.TryGetValue(i.name, out i2);
-                            if (itemFound)
+                            Item i2 = Common.gearDictionary[i.name];
+                            try
                             {
-                                try
+                                Job j = (Job)Enum.Parse(typeof(Job), (string)row.Cells["Job"].Value);
+                                if (!i2.canEquip.Contains(j))
                                 {
-                                    FFXIVGearTracker.Job j = (FFXIVGearTracker.Job)Enum.Parse(typeof(FFXIVGearTracker.Job), (string)row.Cells["Job"].Value);
-                                    if (!i2.canEquip.Contains(j))
-                                    {
-                                        i2.canEquip.Add(j);
-                                        Common.gearDictionary.Remove(i2.name);
-                                        Common.gearDictionary.Add(i2.name, i2);
-                                    }
+                                    i2.canEquip.Add(j);
+                                    Common.gearDictionary.Remove(i2.name);
+                                    Common.gearDictionary.Add(i2.name, i2);
                                 }
-                                catch { }
                             }
+                            catch { }
                         }
                         else
                         {
@@ -3637,8 +3635,8 @@ namespace FFXIVGearTracker
                             {
                                 i.itemStats.itemLevel = GetCellAsInt(row.Cells["ItemLevel"]);
                                 i.unique = GetCellAsBool(row.Cells["IsUniqueItem"]);
-                                i.canEquip = new List<FFXIVGearTracker.Job>();
-                                i.canEquip.Add((FFXIVGearTracker.Job)Enum.Parse(typeof(FFXIVGearTracker.Job), (string)row.Cells["Job"].Value));
+                                i.canEquip = new List<Job>();
+                                i.canEquip.Add((Job)Enum.Parse(typeof(Job), (string)row.Cells["Job"].Value));
                                 i.equipSlot = (GearSlot)Enum.Parse(typeof(GearSlot), (string)row.Cells["EditSlot"].Value);
                                 i.twoHand = GetCellAsBool(row.Cells["IsTwoHand"]);
                                 i.itemStats.weaponDamage = GetCellAsInt(row.Cells["EditWDMG"]);

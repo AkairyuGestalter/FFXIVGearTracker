@@ -7,7 +7,7 @@
     <ProjectGuid>{5B292502-3750-4350-B35C-021CA173C4D9}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FFXIVGearTracker</RootNamespace>
+    <RootNamespace>FFXIV.GearTracking.WinForms</RootNamespace>
     <AssemblyName>FFXIVGearTracker</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -53,8 +53,23 @@
     <Compile Include="AddCharacterForm.Designer.cs">
       <DependentUpon>AddCharacterForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Character.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="CustomEvents.cs" />
     <Compile Include="ExportImport.cs" />
+    <Compile Include="Food.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GearSet.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Item.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="PopOutGearTableForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -86,6 +101,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -104,9 +120,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FFXIV.GearTracking.Common\FFXIV.GearTracking.Common.csproj">
+    <ProjectReference Include="..\FFXIV.GearTracking.Common\FFXIV.GearTracking.Core.csproj">
       <Project>{15eb3dca-4ae2-49d0-9e20-08a8d4396a01}</Project>
-      <Name>FFXIV.GearTracking.Common</Name>
+      <Name>FFXIV.GearTracking.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\FFXIV.GearTracking.Simulation\FFXIV.GearTracking.Simulation.csproj">
       <Project>{d7df8843-7eda-47cd-aecc-fda110ecf00f}</Project>

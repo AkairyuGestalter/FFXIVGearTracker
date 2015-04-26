@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FFXIVGearTracker
+namespace FFXIV.GearTracking.Core
 {
     public enum GearSlot
     {
@@ -100,6 +100,7 @@ namespace FFXIVGearTracker
         public Item()
         {
             itemStats = new Statistics();
+            canEquip = new List<Job>();
         }
 
         public override string ToString()

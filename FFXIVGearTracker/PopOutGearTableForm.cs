@@ -8,7 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace FFXIVGearTracker
+using FFXIV.GearTracking.Core;
+
+namespace FFXIV.GearTracking.WinForms
 {
 	public partial class PopOutGearTableForm : Form
 	{
@@ -182,7 +184,7 @@ namespace FFXIVGearTracker
 				{
 					try
 					{
-						Item tempItem = (FFXIVGearTracker.Item)row.Cells["Item"].Value;
+						Item tempItem = (Item)row.Cells["Item"].Value;
 						Item currentItem = new Item();
 						switch (tempItem.equipSlot)
 						{

@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FFXIVGearTracker
+using FFXIV.GearTracking.Core;
+
+namespace FFXIV.GearTracking.Simulation
 {
     public static class Calculation
     {
@@ -47,19 +49,19 @@ namespace FFXIVGearTracker
         {
             double baseDmgVal, wdmDmgVal, statDmgVal, detDmgVal, critDmgVal;
             
-            baseDmgVal = Common.CalculateDamage(totalStats.weaponDamage, totalStats.mainStat, totalStats.det, totalStats.crit, true);
-            wdmDmgVal = Common.CalculateDamage(totalStats.weaponDamage + 1, totalStats.mainStat, totalStats.det, totalStats.crit, true);
-            statDmgVal = Common.CalculateDamage(totalStats.weaponDamage, totalStats.mainStat + 1, totalStats.det, totalStats.crit, true);
-            detDmgVal = Common.CalculateDamage(totalStats.weaponDamage, totalStats.mainStat, totalStats.det + 1, totalStats.crit, true);
-            critDmgVal = Common.CalculateDamage(totalStats.weaponDamage, totalStats.mainStat, totalStats.det, totalStats.crit + 1, true);
+            baseDmgVal = Core.Common.CalculateDamage(totalStats.weaponDamage, totalStats.mainStat, totalStats.det, totalStats.crit, true);
+            wdmDmgVal = Core.Common.CalculateDamage(totalStats.weaponDamage + 1, totalStats.mainStat, totalStats.det, totalStats.crit, true);
+            statDmgVal = Core.Common.CalculateDamage(totalStats.weaponDamage, totalStats.mainStat + 1, totalStats.det, totalStats.crit, true);
+            detDmgVal = Core.Common.CalculateDamage(totalStats.weaponDamage, totalStats.mainStat, totalStats.det + 1, totalStats.crit, true);
+            critDmgVal = Core.Common.CalculateDamage(totalStats.weaponDamage, totalStats.mainStat, totalStats.det, totalStats.crit + 1, true);
 
             if (j == Job.Scholar || j == Job.WhiteMage)
             {
-                baseDmgVal += Common.CalculateHealing(j, totalStats.weaponDamage, totalStats.mainStat, totalStats.det, totalStats.crit);
-                wdmDmgVal += Common.CalculateHealing(j, totalStats.weaponDamage + 1, totalStats.mainStat, totalStats.det, totalStats.crit);
-                statDmgVal += Common.CalculateHealing(j, totalStats.weaponDamage, totalStats.mainStat + 1, totalStats.det, totalStats.crit);
-                detDmgVal += Common.CalculateHealing(j, totalStats.weaponDamage, totalStats.mainStat, totalStats.det + 1, totalStats.crit);
-                critDmgVal += Common.CalculateHealing(j, totalStats.weaponDamage, totalStats.mainStat, totalStats.det, totalStats.crit + 1);
+                baseDmgVal += Core.Common.CalculateHealing(j, totalStats.weaponDamage, totalStats.mainStat, totalStats.det, totalStats.crit);
+                wdmDmgVal += Core.Common.CalculateHealing(j, totalStats.weaponDamage + 1, totalStats.mainStat, totalStats.det, totalStats.crit);
+                statDmgVal += Core.Common.CalculateHealing(j, totalStats.weaponDamage, totalStats.mainStat + 1, totalStats.det, totalStats.crit);
+                detDmgVal += Core.Common.CalculateHealing(j, totalStats.weaponDamage, totalStats.mainStat, totalStats.det + 1, totalStats.crit);
+                critDmgVal += Core.Common.CalculateHealing(j, totalStats.weaponDamage, totalStats.mainStat, totalStats.det, totalStats.crit + 1);
             }
 
             double statDiff = statDmgVal - baseDmgVal;
@@ -97,17 +99,17 @@ namespace FFXIVGearTracker
             if (j == Job.Warrior || j == Job.Paladin)
             {
                 double baseHPval, vitHPVal, parryHPval, blockRateHPVal, blockStrHPVal, spdHPVal, strHPval;
-                baseHPval = Common.CalculateEHP(j, totalStats.vit, totalStats.mainStat, totalStats.parry, totalStats.blockRate, totalStats.blockStrength, totalStats.speed);
-                strHPval = Common.CalculateEHP(j, totalStats.vit, totalStats.mainStat + 1, totalStats.parry, totalStats.blockRate, totalStats.blockStrength, totalStats.speed);
-                vitHPVal = Common.CalculateEHP(j, totalStats.vit + 1, totalStats.mainStat, totalStats.parry, totalStats.blockRate, totalStats.blockStrength, totalStats.speed);
-                parryHPval = Common.CalculateEHP(j, totalStats.vit, totalStats.mainStat, totalStats.parry + 1, totalStats.blockRate, totalStats.blockStrength, totalStats.speed);
-                blockRateHPVal = Common.CalculateEHP(j, totalStats.vit, totalStats.mainStat, totalStats.parry, totalStats.blockRate + 10, totalStats.blockStrength, totalStats.speed);
-                blockStrHPVal = Common.CalculateEHP(j, totalStats.vit, totalStats.mainStat, totalStats.parry, totalStats.blockRate, totalStats.blockStrength + 10, totalStats.speed);
-                spdHPVal = Common.CalculateEHP(j, totalStats.vit, totalStats.mainStat, totalStats.parry, totalStats.blockRate, totalStats.blockStrength, totalStats.speed + 1);
+                baseHPval = Core.Common.CalculateEHP(j, totalStats.vit, totalStats.mainStat, totalStats.parry, totalStats.blockRate, totalStats.blockStrength, totalStats.speed);
+                strHPval = Core.Common.CalculateEHP(j, totalStats.vit, totalStats.mainStat + 1, totalStats.parry, totalStats.blockRate, totalStats.blockStrength, totalStats.speed);
+                vitHPVal = Core.Common.CalculateEHP(j, totalStats.vit + 1, totalStats.mainStat, totalStats.parry, totalStats.blockRate, totalStats.blockStrength, totalStats.speed);
+                parryHPval = Core.Common.CalculateEHP(j, totalStats.vit, totalStats.mainStat, totalStats.parry + 1, totalStats.blockRate, totalStats.blockStrength, totalStats.speed);
+                blockRateHPVal = Core.Common.CalculateEHP(j, totalStats.vit, totalStats.mainStat, totalStats.parry, totalStats.blockRate + 10, totalStats.blockStrength, totalStats.speed);
+                blockStrHPVal = Core.Common.CalculateEHP(j, totalStats.vit, totalStats.mainStat, totalStats.parry, totalStats.blockRate, totalStats.blockStrength + 10, totalStats.speed);
+                spdHPVal = Core.Common.CalculateEHP(j, totalStats.vit, totalStats.mainStat, totalStats.parry, totalStats.blockRate, totalStats.blockStrength, totalStats.speed + 1);
 
                 double vitDiff = vitHPVal - baseHPval;
                 double strDiff = strHPval - baseHPval;
-                gearWeights.vitWeight = Common.VitPerSTR;
+                gearWeights.vitWeight = Core.Common.VitPerSTR;
                 gearWeights.parryWeight = (parryHPval - baseHPval) / vitDiff * gearWeights.vitWeight;
                 gearWeights.blockRateWeight = (blockRateHPVal - baseHPval) / 10.0 / vitDiff * gearWeights.vitWeight;
                 gearWeights.blockStrengthWeight = (blockStrHPVal - baseHPval) / 10.0 / vitDiff * gearWeights.vitWeight;

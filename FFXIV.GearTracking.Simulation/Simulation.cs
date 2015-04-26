@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FFXIVGearTracker
+using FFXIV.GearTracking.Core;
+
+namespace FFXIV.GearTracking.Simulation
 {
 	public abstract class Simulation
 	{
@@ -31,7 +33,7 @@ namespace FFXIVGearTracker
 			double avgAutoDelay = 0.0;
 			int weaponCount = 0;
 
-			foreach (Item i in Common.gearDictionary.Values)
+			foreach (Item i in Core.Common.gearDictionary.Values)
 			{
 				if (i.equipSlot == GearSlot.MainHand && i.canEquip.Contains(simJob))
 				{
@@ -161,7 +163,7 @@ namespace FFXIVGearTracker
 		{
 			if (spdReduction < 0)
 			{
-				spdReduction = Common.CalculateSpdReduction(speed);
+				spdReduction = Core.Common.CalculateSpdReduction(speed);
 			}
 			return (double)Math.Round(2.5 - spdReduction, 3);
 		}
@@ -169,7 +171,7 @@ namespace FFXIVGearTracker
 		{
 			if (spdReduction < 0)
 			{
-				spdReduction = Common.CalculateSpdReduction(speed);
+				spdReduction = Core.Common.CalculateSpdReduction(speed);
 			}
 			return (round ? (double)Math.Round(castTime - spdReduction, 3) : castTime - spdReduction);
 		}

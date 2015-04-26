@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace FFXIVGearTracker
+using FFXIV.GearTracking.Core;
+
+namespace FFXIV.GearTracking.WinForms
 {
 	#region Delegate Only
 	public delegate void ActivateCalcButtons(bool active);

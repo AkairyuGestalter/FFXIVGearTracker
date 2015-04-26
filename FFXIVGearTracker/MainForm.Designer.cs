@@ -1,4 +1,4 @@
-﻿namespace FFXIVGearTracker
+﻿namespace FFXIV.GearTracking.WinForms
 {
     partial class MainForm
     {

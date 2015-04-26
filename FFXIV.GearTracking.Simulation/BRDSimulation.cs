@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FFXIVGearTracker
+using FFXIV.GearTracking.Core;
+
+namespace FFXIV.GearTracking.Simulation
 {
 	class BRDSimulation : Simulation
 	{
@@ -111,7 +113,7 @@ namespace FFXIVGearTracker
 								if (windBitecritMod != critmod)
 								{
 									windBitecritMod = critmod;
-									windBiteCritChance = (double)Math.Round(Common.CalculateCritRate(stats.crit, critmod) * 100.0, 4);
+									windBiteCritChance = (double)Math.Round(Core.Common.CalculateCritRate(stats.crit, critmod) * 100.0, 4);
 								}
 								windBitedmgMod = 1 * (bloodforbloodDuration > 0.0 ? 1.1 : 1) * (ragingStrikesDuration > 0.0 ? 1.2 : 1);
 								windbiteHawkEye = hawkeyeDuration > 0.0;
@@ -128,7 +130,7 @@ namespace FFXIVGearTracker
 								if (venomBitecritMod != critmod)
 								{
 									venomBitecritMod = critmod;
-									venomBiteCritChance = (double)Math.Round(Common.CalculateCritRate(stats.crit, critmod) * 100.0, 4);
+									venomBiteCritChance = (double)Math.Round(Core.Common.CalculateCritRate(stats.crit, critmod) * 100.0, 4);
 								}
 								venombiteHawkEye = hawkeyeDuration > 0.0;
 								venomBitedmgMod = 1 * (bloodforbloodDuration > 0.0 ? 1.1 : 1) * (ragingStrikesDuration > 0.0 ? 1.2 : 1);
@@ -317,18 +319,18 @@ namespace FFXIVGearTracker
 		{
 			if (baseAutoDmg < 0)
 			{
-				baseAutoDmg = Common.CalculateAutoAttackDamage(stats, false);
+				baseAutoDmg = Core.Common.CalculateAutoAttackDamage(stats, false);
 			}
 			if (autoCritRate < 0 || autoCritModifier != critModifier)
 			{
 				autoCritModifier = critModifier;
-				autoCritRate = Common.CalculateCritRate(stats.crit, autoCritModifier);
+				autoCritRate = Core.Common.CalculateCritRate(stats.crit, autoCritModifier);
 			}
 			if (hawkEye && hawkEyeAutoDmg < 0)
 			{
 				Statistics hawkEyestats = stats;
 				hawkEyestats.mainStat = (int)(stats.mainStat * 1.15);
-				hawkEyeAutoDmg = Common.CalculateAutoAttackDamage(hawkEyestats, false);
+				hawkEyeAutoDmg = Core.Common.CalculateAutoAttackDamage(hawkEyestats, false);
 			}
 			double autoAttackDamage = (hawkEye ? hawkEyeAutoDmg : baseAutoDmg) * (1 + 0.5 * autoCritRate);
 			return autoAttackDamage;
@@ -376,18 +378,18 @@ namespace FFXIVGearTracker
 			}
 			if (baseSkillDmg < 0)
 			{
-				baseSkillDmg = Common.CalculateDamage(stats, false) * 1.2;
+				baseSkillDmg = Core.Common.CalculateDamage(stats, false) * 1.2;
 			}
 			if (critRate < 0 || criticalModifier != critModifier)
 			{
 				criticalModifier = critModifier;
-				critRate = Common.CalculateCritRate(stats.crit, criticalModifier);
+				critRate = Core.Common.CalculateCritRate(stats.crit, criticalModifier);
 			}
 			if (hawkEye && hawkEyeBaseDmg < 0)
 			{
 				Statistics hawkEyestats = stats;
 				hawkEyestats.mainStat = (int)(stats.mainStat * 1.15);
-				hawkEyeBaseDmg = Common.CalculateDamage(hawkEyestats, false) * 1.2;
+				hawkEyeBaseDmg = Core.Common.CalculateDamage(hawkEyestats, false) * 1.2;
 			}
 			double skillDamage = (hawkEye ? hawkEyeBaseDmg : baseSkillDmg) * potency / 100.0 * ((skillName == "Straight Shot" && straighterShot) ? 1.5 : 1.0 + 0.5 * critRate);
 			return skillDamage;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,7 +9,9 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Reflection;
 using System.IO;
 
-namespace FFXIVGearTracker
+using DrWPF.Windows.Data;
+
+namespace FFXIV.GearTracking.Core
 {
     public enum Job
     {
@@ -33,11 +36,12 @@ namespace FFXIVGearTracker
 		public static Dictionary<string, Food> foodDictionary = new Dictionary<string, Food>();
         public static List<Character> allChars = new List<Character>();
 		public static Dictionary<string, Character> charDictionary = new Dictionary<string, Character>();
+        public static ObservableDictionary<string, Item> gearDictWPF = new ObservableDictionary<string, Item>(); 
 
 		[NonSerialized]
 		public const string DefaultDamageFormula = "WD * 0.2714745 + STAT * 0.1006032 + (DTR - 202) * 0.0241327 + WD * STAT * 0.0036167 + WD * (DTR - 202) * 0.0010800 - 1";
 		[NonSerialized]
-		public static string DefaultAutoAttackDamageFormula = "(WD * 0.2714745 + STAT * 0.1006032 + (DTR - 202) * 0.0241327 + WD * STAT * 0.0036167 + WD * (DTR - 202) * 0.0022597 - 1) * (DELAY / 3.0)";
+		public const string DefaultAutoAttackDamageFormula = "(WD * 0.2714745 + STAT * 0.1006032 + (DTR - 202) * 0.0241327 + WD * STAT * 0.0036167 + WD * (DTR - 202) * 0.0022597 - 1) * (DELAY / 3.0)";
 		[NonSerialized]
 		public const string DefaultHealingFormula = "WD * (0.0114 * MND + 0.00145 * DTR + 0.3736) + (0.21 * MND) + (0.11 * DTR) + (0.00011316 * MND * DTR)";
 		[NonSerialized]
@@ -53,7 +57,7 @@ namespace FFXIVGearTracker
 		[NonSerialized]
         public const bool DefaultSimulateWeights = false;
         [NonSerialized]
-        public static bool DefaultUseSpeedBreakPoint = false;
+        public const bool DefaultUseSpeedBreakPoint = false;
 
         public static string DamageFormula = "WD * 0.2714745 + STAT * 0.1006032 + (DTR - 202) * 0.0241327 + WD * STAT * 0.0036167 + WD * (DTR - 202) * 0.0010800 - 1";
 		public static string AutoAttackDamageFormula = "WD * 0.2714745 + STAT * 0.1006032 + (DTR - 202) * 0.0241327 + WD * STAT * 0.0036167 + WD * (DTR - 202) * 0.0022597 - 1) * (DELAY / 3.0)";
@@ -130,7 +134,14 @@ namespace FFXIVGearTracker
 					for (int i = 0; i < a.Length/2; i++)
 						if (field.Name == (a[i, 0] as string))
 							field.SetValue(null, a[i, 1]);
-				return true;
+
+                if (gearDictWPF.Count == 0 && gearDictionary.Count > 0)
+                {
+                    foreach (KeyValuePair<string, Item> i in gearDictionary)
+                    {
+                        gearDictWPF.Add(i.Key, i.Value);
+                    }
+                }
 			}
 			catch (Exception ex)
 			{
@@ -138,8 +149,8 @@ namespace FFXIVGearTracker
 			}
             finally
             {
-                
             }
+            return true;
 		}
 
 		public static double CalculateCritRate(int crit, double critMod)

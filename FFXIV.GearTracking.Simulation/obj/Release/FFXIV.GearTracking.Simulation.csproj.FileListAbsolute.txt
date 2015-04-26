@@ -1,0 +1,9 @@
+C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.Simulation\bin\Release\FFXIV.GearTracking.Simulation.dll
+C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.Simulation\bin\Release\FFXIV.GearTracking.Simulation.pdb
+C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.Simulation\bin\Release\FFXIV.GearTracking.Core.dll
+C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.Simulation\bin\Release\NCalc.dll
+C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.Simulation\bin\Release\FFXIV.GearTracking.Core.pdb
+C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.Simulation\obj\Release\FFXIV.GearTracking.Simulation.csprojResolveAssemblyReference.cache
+C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.Simulation\obj\Release\FFXIV.GearTracking.Simulation.dll
+C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.Simulation\obj\Release\FFXIV.GearTracking.Simulation.pdb
+C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.Simulation\bin\Release\ObservableDictionary.dll

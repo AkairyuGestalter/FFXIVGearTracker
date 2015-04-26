@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 
-namespace FFXIVGearTracker
+namespace FFXIV.GearTracking.Core
 {
 	[Serializable]
     public struct StatWeights

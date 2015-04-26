@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FFXIVGearTracker
+namespace FFXIV.GearTracking.Core
 {
 	[Serializable]
     public class Food
