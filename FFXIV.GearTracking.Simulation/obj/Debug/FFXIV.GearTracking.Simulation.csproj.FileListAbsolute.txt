@@ -6,4 +6,3 @@ C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.Simulation\
 C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.Simulation\obj\Debug\FFXIV.GearTracking.Simulation.csprojResolveAssemblyReference.cache
 C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.Simulation\obj\Debug\FFXIV.GearTracking.Simulation.dll
 C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.Simulation\obj\Debug\FFXIV.GearTracking.Simulation.pdb
-C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.Simulation\bin\Debug\ObservableDictionary.dll

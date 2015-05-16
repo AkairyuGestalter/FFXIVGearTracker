@@ -41,4 +41,3 @@ C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIVGearTracker\obj\Debug\FFX
 C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIVGearTracker\obj\Debug\FFXIVGearTracker.csproj.GenerateResource.Cache
 C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIVGearTracker\obj\Debug\FFXIVGearTracker.exe
 C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIVGearTracker\obj\Debug\FFXIVGearTracker.pdb
-C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIVGearTracker\bin\Debug\ObservableDictionary.dll

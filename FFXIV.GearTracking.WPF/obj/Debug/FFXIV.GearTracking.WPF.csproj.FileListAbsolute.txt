@@ -17,3 +17,4 @@ C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.WPF\bin\Deb
 C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.WPF\bin\Debug\FFXIV.GearTracking.Core.pdb
 C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.WPF\bin\Debug\FFXIV.GearTracking.Simulation.pdb
 C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.WPF\bin\Debug\ObservableDictionary.dll
+C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.WPF\obj\Debug\FFXIVGearTracker_MarkupCompile.lref

@@ -33,6 +33,126 @@ namespace FFXIV.GearTracking.Core
 		public int[] relicTier;
 		public List<string> ownedItems;
 
+        public List<string> OwnedItems
+        {
+            get { return ownedItems; }
+            set { ownedItems = value; }
+        }
+        public int OwnedAccuracyA
+        {
+            get { return ownedAccReqListA[(int)currentJob]; }
+            set { ownedAccReqListA[(int)currentJob] = value; }
+        }
+        public int OwnedAccuracyB
+        {
+            get { return ownedAccReqListB[(int)currentJob]; }
+            set { ownedAccReqListB[(int)currentJob] = value; }
+        }
+        public int ClearedTurn
+        {
+            get { return clearedTurn; }
+            set { clearedTurn = value; }
+        }
+        public int AccuracyNeeded
+        {
+            get { return accuracyNeeds[(int)currentJob]; }
+            set { accuracyNeeds[(int)currentJob] = value; }
+        }
+        public double TomeTier
+        {
+            get { return tomeTier[(int)currentJob]; }
+            set { tomeTier[(int)currentJob] = value; }
+        }
+        public int RelicTier
+        {
+            get { return relicTier[(int)currentJob]; }
+            set { relicTier[(int)currentJob] = value; }
+        }
+        public string Name
+        {
+            get { return charName; }
+            set { charName = value; }
+        }
+        public Job CurrentJob
+        {
+            get { return currentJob; }
+            set { currentJob = value; }
+        }
+        public Statistics BaseStats
+        {
+            get { return baseStats[(int)currentJob]; }
+            set { baseStats[(int)currentJob] = value; }
+        }
+        public StatWeights CurrentWeights
+        {
+            get { return currentWeights; }
+            set { currentWeights = value; }
+        }
+
+        public GearSet ProgressionDamage
+        {
+            get { return progressionDamage[(int)currentJob]; }
+            set { progressionDamage[(int)currentJob] = value; }
+        }
+        public GearSet ProgressionRaidA
+        {
+            get { return progressionCoilFoodA[(int)currentJob]; }
+            set { progressionCoilFoodA[(int)currentJob] = value; }
+        }
+        public GearSet ProgressionRaidB
+        {
+            get { return progressionCoilFoodB[(int)currentJob]; }
+            set { progressionCoilFoodB[(int)currentJob] = value; }
+        }
+
+        public GearSet OwnedDamage
+        {
+            get { return ownedDamage[(int)currentJob]; }
+            set { ownedDamage[(int)currentJob] = value; }
+        }
+        public GearSet OwnedRaidA
+        {
+            get { return ownedCoilFoodA[(int)currentJob]; }
+            set { ownedCoilFoodA[(int)currentJob] = value; }
+        }
+        public GearSet OwnedRaidB
+        {
+            get { return ownedCoilFoodB[(int)currentJob]; }
+            set { ownedCoilFoodB[(int)currentJob] = value; }
+        }
+
+        public GearSet IdealDamage
+        {
+            get { return idealDamage[(int)currentJob]; }
+            set { idealDamage[(int)currentJob] = value; }
+        }
+        public GearSet IdealRaidA
+        {
+            get { return idealCoilFoodA[(int)currentJob]; }
+            set { idealCoilFoodA[(int)currentJob] = value; }
+        }
+        public GearSet IdealRaidB
+        {
+            get { return idealCoilFoodB[(int)currentJob]; }
+            set { idealCoilFoodB[(int)currentJob] = value; }
+        }
+
+        public GearSet CurrentDamage
+        {
+            get { return currentDamage[(int)currentJob]; }
+            set { currentDamage[(int)currentJob] = value; }
+        }
+        public GearSet CurrentRaidA
+        {
+            get { return currentDamage[(int)currentJob]; }
+            set { currentDamage[(int)currentJob] = value; }
+        }
+        public GearSet CurrentRaidB
+        {
+            get { return currentDamage[(int)currentJob]; }
+            set { currentDamage[(int)currentJob] = value; }
+        }
+
         public Character()
         {
 			currentDamage = new GearSet[Enum.GetValues(typeof(Job)).Length];

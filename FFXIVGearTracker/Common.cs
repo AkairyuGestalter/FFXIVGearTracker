@@ -10,19 +10,6 @@ using System.IO;
 
 namespace FFXIVGearTracker
 {
-    public enum Job
-    {
-        Paladin,
-        Warrior,
-        Monk,
-        Dragoon,
-        Bard,
-        BlackMage,
-        WhiteMage,
-        Summoner,
-        Scholar,
-		Ninja
-    }
     public class Common
     {
 		public static int[] accuracyRequirements = { 512, 512, 492, 492, 492, 471, 341, 492, 341, 492 };
@@ -261,5 +248,19 @@ namespace FFXIVGearTracker
 		{
 			return (double)Math.Round((decimal)(2.5 - (speed > 344 ? (.001952 * 3 + (speed - (341 + 3)) * .000952) : (speed - 341) * .001952)), 3);
 		}
+    }
+
+    public enum Job
+    {
+        Paladin,
+        Warrior,
+        Monk,
+        Dragoon,
+        Bard,
+        BlackMage,
+        WhiteMage,
+        Summoner,
+        Scholar,
+        Ninja
     }
 }

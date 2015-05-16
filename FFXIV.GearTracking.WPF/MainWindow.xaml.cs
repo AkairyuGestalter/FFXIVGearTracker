@@ -26,9 +26,10 @@ namespace FFXIV.GearTracking.WPF
     {
         public MainWindow()
         {
-            InitializeComponent();
             LoadData();
-            ItemsGrid.ItemsSource = Common.gearDictWPF;
+            InitializeComponent();
+            //ItemsGrid.ItemsSource = Common.gearDictWPF;
+            //ItemsGrid.AutoGenerateColumns
         }
 
         private bool LoadData()
@@ -39,9 +40,52 @@ namespace FFXIV.GearTracking.WPF
             }
             else if (File.Exists(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "FFXIVGearTracker.DAT")))
             {
-                Common.Load(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "FFXIVGearTracker.DAT"));
+                return Common.Load(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "FFXIVGearTracker.DAT"));
             }
-            return true;
+            return false;
+        }
+
+        private void JobSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ItemsGrid != null)
+            {
+                (ItemsGrid.ItemsSource as CollectionView).Refresh();
+            }
+        }
+
+        private void GearListView_Filter(object sender, FilterEventArgs e)
+        {
+            Item i = (Item)e.Item;
+            try
+            {
+                if (i.canEquip.Contains(Common.activeChar.currentJob))
+                {
+                    e.Accepted = true;
+                }
+                else
+                {
+                    e.Accepted = false;
+                }
+            }
+            catch
+            {
+                e.Accepted = false;
+            }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+
+        }
+
+        private void Jobs_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            object parent = ((CheckBox)sender).TemplatedParent;
         }
     }
 }
