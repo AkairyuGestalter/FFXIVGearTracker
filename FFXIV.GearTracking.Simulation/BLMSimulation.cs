@@ -2425,7 +2425,24 @@ namespace FFXIV.GearTracking.Simulation
                             }
                             else if (mode == BuffType.AF3)
                             {
-                                
+                                /* AF3 Opener:
+                                 * FireStarter, Ley/RS, F4x3, F1, SC, F4, Convert, F4x2, B3
+                                 * 
+                                 * AF3 basics:
+                                 * 1. Don't drop enochian, be ready to swap to Ice if needed
+                                 * 2. Don't drop AF3, be ready to drop a F1 or FireStarter if needed
+                                 * 3. Do whatever the highest PPS action is after satisfying the above
+                                 * 
+                                 * AF3 Priorities/logic
+                                 * B3 if MP is low, or if otherwise we'd lose Enochian before we could get to B4 (unless we're going to refresh it anyways, ie refreshes == 2)
+                                 * F1 if we can't get another spell + F1 in before AF3 ends
+                                 * [Cooldowns]
+                                 *   Ley Lines if Raging Strikes is either up, or will not be up imminently
+                                 *   Raging Strikes if we're at the start of a fresh enochian fire cycle
+                                 *   Swiftcast if the last spell was Fire 1 (or FireStarter) and RS is up.
+                                 * ThunderCloud if it's up
+                                 * Fire 4 
+                                 */
                             }
                         }
                     }
