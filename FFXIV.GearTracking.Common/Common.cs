@@ -8,11 +8,109 @@ using NCalc;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Reflection;
 using System.IO;
-using System.ComponentModel;
-
 
 namespace FFXIV.GearTracking.Core
 {
+    public enum Job
+    {
+        Paladin,
+        Warrior,
+        Monk,
+        Dragoon,
+        Bard,
+        BlackMage,
+        WhiteMage,
+        Summoner,
+        Scholar,
+        Ninja
+    }
+    public enum GearSlot
+    {
+        MainHand,
+        OffHand,
+        Head,
+        Body,
+        Hands,
+        Waist,
+        Legs,
+        Feet,
+        Neck,
+        Ears,
+        Wrists,
+        Ring
+    }
+    [Serializable]
+    public struct Statistics
+    {
+        public int weaponDamage;
+        public double autoAttackDelay;
+        public int blockRate;
+        public int blockStrength;
+        public int mainStat;
+        public int vit;
+        public int det;
+        public int crit;
+        public int speed;
+        public int acc;
+        public int itemLevel;
+        public int pie;
+        public int parry;
+
+        public int MainStat
+        {
+            get { return mainStat; }
+            set { mainStat = value; }
+        }
+        public int VIT
+        {
+            get { return vit; }
+            set { vit = value; }
+        }
+
+        public Statistics(int iLvl, int dmg, int stat, int vitality, int determination, int critrate, int speedstat, int accuracy, int piety, int parrying, int blockrate, int blockstrength, double delay)
+        {
+            weaponDamage = dmg;
+            mainStat = stat;
+            vit = vitality;
+            det = determination;
+            crit = critrate;
+            speed = speedstat;
+            acc = accuracy;
+            itemLevel = iLvl;
+            pie = piety;
+            parry = parrying;
+            blockRate = blockrate;
+            blockStrength = blockstrength;
+            autoAttackDelay = delay;
+        }
+
+        public Statistics(int iLvl, int dmg, int stat, int vitality, int determination, int critrate, int speedstat, int accuracy, int piety, int parrying)
+            : this(iLvl, dmg, stat, vitality, determination, critrate, speedstat, accuracy, piety, parrying, 0, 0, 0)
+        {
+        }
+        public Statistics(int iLvl, int dmg, int stat, int vitality, int determination, int critrate, int speedstat, int accuracy)
+            : this(iLvl, dmg, stat, vitality, determination, critrate, speedstat, accuracy, 0, 0, 0, 0, 0)
+        {
+        }
+
+        public static Statistics operator +(Statistics a, Statistics b)
+        {
+            return new Statistics((a.itemLevel + b.itemLevel) / 2, a.weaponDamage + b.weaponDamage, a.mainStat + b.mainStat, a.vit + b.vit, a.det + b.det, a.crit + b.crit, a.speed + b.speed, a.acc + b.acc, a.pie + b.pie, a.parry + b.parry, a.blockRate + b.blockRate, a.blockStrength + b.blockStrength, a.autoAttackDelay + b.autoAttackDelay);
+        }
+        public static Statistics operator -(Statistics a, Statistics b)
+        {
+            return new Statistics((a.itemLevel - b.itemLevel) / 2, a.weaponDamage - b.weaponDamage, a.mainStat - b.mainStat, a.vit - b.vit, a.det - b.det, a.crit - b.crit, a.speed - b.speed, a.acc - b.acc, a.pie - b.pie, a.parry - b.parry, a.blockRate - b.blockRate, a.blockStrength - b.blockStrength, a.autoAttackDelay - b.autoAttackDelay);
+        }
+        public double Value(StatWeights weights)
+        {
+            return weaponDamage * weights.wdmgWeight + mainStat * weights.statWeight + det * weights.dtrWeight + crit * weights.critWeight + speed * weights.spdWeight + pie * weights.pieWeight + vit * weights.vitWeight + parry * weights.parryWeight + blockRate * weights.blockRateWeight + blockStrength * weights.blockStrengthWeight;
+        }
+
+        public override string ToString()
+        {
+            return "WDMG: " + weaponDamage + ", Stat: " + mainStat + ", Acc: " + acc + ", DET: " + det + ", Crit: " + crit + ", Speed: " + speed;
+        }
+    }
     public class Common
     {
         public static int[] accuracyRequirements = { 512, 512, 492, 492, 492, 471, 341, 492, 341, 492 };
@@ -23,23 +121,29 @@ namespace FFXIV.GearTracking.Core
         public static Dictionary<string, Food> foodDictionary = new Dictionary<string, Food>();
         public static List<Character> allChars = new List<Character>();
         public static Dictionary<string, Character> charDictionary = new Dictionary<string, Character>();
-        public static ObservableCollection<Character> charDictWPF = new ObservableCollection<Character>();
         public static ObservableCollection<Item> gearDictWPF = new ObservableCollection<Item>();
-        public static Character activeChar = new Character();
-        public Character ActiveCharacter
+        public static ObservableCollection<Character> charDictWPF = new ObservableCollection<Character>();
+        public ObservableCollection<Item> GearDictionary
         {
-            get { return activeChar; }
-            set { activeChar = value; }
+            get
+            {
+                return gearDictWPF;
+            }
+            set
+            {
+                gearDictWPF = value;
+            }
         }
-        public ObservableCollection<Character> CharacterList
+        public ObservableCollection<Character> CharacterDictionary
         {
             get { return charDictWPF; }
             set { charDictWPF = value; }
         }
-        public ObservableCollection<Item> GearList
+        public static Character activeChar;
+        public Character ActiveCharacter
         {
-            get { return gearDictWPF; }
-            set { gearDictWPF = value; }
+            get { return activeChar; }
+            set { activeChar = value; }
         }
 
         [NonSerialized]
@@ -59,6 +163,8 @@ namespace FFXIV.GearTracking.Core
         [NonSerialized]
         public const int DefaultHighestTurn = 13;
         [NonSerialized]
+        public const double DefaultHighestRaid = 3.04;
+        [NonSerialized]
         public const bool DefaultSimulateWeights = false;
         [NonSerialized]
         public const bool DefaultUseSpeedBreakPoint = false;
@@ -70,7 +176,8 @@ namespace FFXIV.GearTracking.Core
         public static string SpdReductionFormula = ".001952 * 3 + (SPEED - (341 + 3)) * .000952";
         public static string ParryFormula = "((PARRY - 341) * 0.076 + 5.0) / 100.0";
         public static double VitPerSTR = 1.0;
-        public static int HighestTurn = 5;
+        public static int HighestTurn = 13;
+        public static double HighestRaid = 3.04;
 
         public static bool GearTableVisible = false;
         public static bool GearTablePoppedOut = false;
@@ -147,6 +254,10 @@ namespace FFXIV.GearTracking.Core
                 {
                     foreach (KeyValuePair<string, Item> i in gearDictionary)
                     {
+                        if (i.Value.tomeTier > 3 && i.Value.itemStats.itemLevel < 140)
+                        {
+                            i.Value.tomeTier = (i.Value.tomeTier / 10 + 2);
+                        }
                         gearDictWPF.Add(i.Value);
                     }
                 }
@@ -157,22 +268,43 @@ namespace FFXIV.GearTracking.Core
                         charDictWPF.Add(c.Value);
                     }
                 }
-                if (string.IsNullOrWhiteSpace(activeChar.Name) && charDictWPF.Count > 0)
+                if (activeChar == null && charDictWPF.Count > 0)
                 {
-                    activeChar = charDictWPF[0];
+                }
+                foreach (KeyValuePair<string, Item> i in gearDictionary)
+                {
+                    if (i.Value.tomeTier > 3 && i.Value.itemStats.itemLevel < 140)
+                    {
+                        i.Value.tomeTier = (i.Value.tomeTier / 10 + 2);
+                    }
+                    if (i.Value.sourceRaid == 0 && i.Value.sourceTurn > 0)
+                    {
+                        i.Value.sourceRaid = 2 + (double)i.Value.sourceTurn / 100.0;
+                    }
                 }
                 foreach (Item i in gearDictWPF)
                 {
-                    if (!(i.equipList != null))
+                    if (i.tomeTier > 3 && i.itemStats.itemLevel < 140)
                     {
-                        i.equipList = new ObservableCollection<Equippable>();
+                        i.tomeTier = (i.tomeTier / 10 + 2);
                     }
-                    if (i.equipList.Count == 0)
+                    if (i.sourceRaid == 0 && i.sourceTurn > 0)
                     {
-                        foreach (Job j in Enum.GetValues(typeof(Job)))
-                        {
-                            i.equipList.Add(new Equippable(j, i.canEquip.Contains(j)));
-                        }
+                        i.sourceRaid = 2 + (double)i.sourceTurn / 100.0;
+                    }
+                }
+                foreach (KeyValuePair<string, Character> c in charDictionary)
+                {
+                    if (c.Value.clearedRaid == 0 && c.Value.clearedTurn > 0)
+                    {
+                        c.Value.clearedRaid = 2.0 + c.Value.clearedTurn / 100.0;
+                    }
+                }
+                foreach (Character c in charDictWPF)
+                {
+                    if (c.clearedRaid == 0 && c.clearedTurn > 0)
+                    {
+                        c.clearedRaid = 2.0 + c.clearedTurn / 100.0;
                     }
                 }
             }
@@ -186,8 +318,17 @@ namespace FFXIV.GearTracking.Core
             return true;
         }
 
+        public static double CalculateDoTSpeedScalar(int speed)
+        {
+            return 1 + (speed - 354) / 7722.0;
+        }
+        public static double CalculateCritBonus(int crit)
+        {
+            return (crit - 354) / (858.0 * 5.0) + 1.45;
+        }
         public static double CalculateCritRate(int crit, double critMod)
         {
+            return (crit - 354) / (858.0 * 5.0) + 0.05 + critMod / 100.0; // level 60
             try
             {
                 string critForm = CritFormula.Replace("CRITPCTMOD", critMod.ToString()).Replace("CRIT", crit.ToString());
@@ -208,28 +349,31 @@ namespace FFXIV.GearTracking.Core
             return CalculateAutoAttackDamage(stats.weaponDamage, stats.mainStat, stats.det, stats.autoAttackDelay, stats.crit, critMod, includeCrit);
         }
         public static double CalculateAutoAttackDamage(int weaponDamage, int mainStat, int determination, double delay, int crit, double critMod, bool includeCrit = true)
+		{
+            return (((weaponDamage * delay / 3.0) / 33.04 + 1) * (mainStat / 6.92) * (determination / 6715.0 + 1) * 1 / delay) * (includeCrit ? (1 - CalculateCritRate(crit, critMod) + CalculateCritBonus(crit) * CalculateCritRate(crit, critMod)) : 1); //level 60
+			try
+			{
+				string damageForm = AutoAttackDamageFormula.Replace("WD", weaponDamage.ToString()).Replace("STAT", mainStat.ToString()).Replace("DTR", determination.ToString()).Replace("DELAY", delay.ToString());
+				Expression damageVal = new Expression(damageForm);
+				return (double)damageVal.Evaluate() * (1 + (includeCrit ? 0.5 * CalculateCritRate(crit, critMod) : 0));
+			}
+			catch
+			{
+				return 0.0;
+			}
+		}
+        public static double CalculateDamage(Statistics stats, bool includeCrit = true, double damageBonus = 1.0)
         {
-            try
-            {
-                string damageForm = AutoAttackDamageFormula.Replace("WD", weaponDamage.ToString()).Replace("STAT", mainStat.ToString()).Replace("DTR", determination.ToString()).Replace("DELAY", delay.ToString());
-                Expression damageVal = new Expression(damageForm);
-                return (double)damageVal.Evaluate() * (1 + (includeCrit ? 0.5 * CalculateCritRate(crit, critMod) : 0));
-            }
-            catch
-            {
-                return 0.0;
-            }
+            return CalculateDamage(stats, 0.0, includeCrit, damageBonus);
         }
-        public static double CalculateDamage(Statistics stats, bool includeCrit = true)
+        public static double CalculateDamage(Statistics stats, double critmod, bool includeCrit = true, double damageBonus = 1.0)
         {
-            return CalculateDamage(stats, 0.0, includeCrit);
+            return CalculateDamage(stats.weaponDamage, stats.mainStat, stats.det, stats.crit, critmod, includeCrit, damageBonus);
         }
-        public static double CalculateDamage(Statistics stats, double critmod, bool includeCrit = true)
+        public static double CalculateDamage(int weaponDamage, int mainStat, int determination, int crit, double critMod, bool includeCrit = true, double damageBonus = 1.0)
         {
-            return CalculateDamage(stats.weaponDamage, stats.mainStat, stats.det, stats.crit, critmod, includeCrit);
-        }
-        public static double CalculateDamage(int weaponDamage, int mainStat, int determination, int crit, double critMod, bool includeCrit = true)
-        {
+            //return ((weaponDamage / 25.0 + 1) * (mainStat / 9.0) * (determination / 7290.0 + 1) * damageBonus) * (includeCrit ? 1 - CalculateCritRate(crit, critMod) + CalculateCritBonus(crit) * CalculateCritRate(crit, critMod) : 1); // level 60 DRG
+            return ((weaponDamage * 0.0403757 + 1) * (mainStat * 0.1122727 - 1.9037031) * (determination * 0.0001331 + 1) * damageBonus) * (includeCrit ? 1 - CalculateCritRate(crit, critMod) + CalculateCritBonus(crit) * CalculateCritRate(crit, critMod) : 1); // level 60 BLM
             try
             {
                 string damageForm = DamageFormula.Replace("WD", weaponDamage.ToString()).Replace("STAT", mainStat.ToString()).Replace("DTR", determination.ToString());
@@ -243,13 +387,14 @@ namespace FFXIV.GearTracking.Core
                 return 0.0;
             }
         }
-        public static double CalculateDamage(int weaponDamage, int mainStat, int determination, int critRate, bool includeCrit = true)
+        public static double CalculateDamage(int weaponDamage, int mainStat, int determination, int critRate, bool includeCrit = true, double damageBonus = 1.0)
         {
-            return CalculateDamage(weaponDamage, mainStat, determination, critRate, 0.0, includeCrit);
+            return CalculateDamage(weaponDamage, mainStat, determination, critRate, 0.0, includeCrit, damageBonus);
         }
 
         public static double CalculateSpdReduction(int speed)
         {
+            return ((speed - 354) / 2641.0); // level 60
             try
             {
                 string speedForm = SpdReductionFormula.Replace("SPEED", speed.ToString());
@@ -270,8 +415,8 @@ namespace FFXIV.GearTracking.Core
                 string critForm = CritFormula.Replace("CRITPCTMOD", critMod.ToString()).Replace("CRIT", critRate.ToString());
                 Expression healVal = new Expression(healForm);
                 Expression critVal = new Expression(critForm);
-                double directHeal = (j == Job.Scholar ? (4 + 3 + 1.5) / 3 : 1) * (double)healVal.Evaluate() * (1 + 0.5 * (double)critVal.Evaluate()); // Normalize 
-                double shieldHeal = (3 + 3 * (double)critVal.Evaluate() + 1.5) * (double)healVal.Evaluate() * (1 + 0.5 * (double)critVal.Evaluate()) / 3;
+                double directHeal = (j == Job.Scholar ? (4 + 3 + 1.5) / 3 : 1) * (double)healVal.Evaluate() * (1 + CalculateCritBonus(critRate) * (double)critVal.Evaluate()); // Normalize 
+                double shieldHeal = (3 + 3 * (double)critVal.Evaluate() + 1.5) * (double)healVal.Evaluate() * (1 + CalculateCritBonus(critRate) * (double)critVal.Evaluate()) / 3;
                 return (directHeal + (j == Job.Scholar ? shieldHeal : 0)) / (j == Job.Scholar ? 2 : 1);
             }
             catch
@@ -306,218 +451,7 @@ namespace FFXIV.GearTracking.Core
 
         private static double GCDSpeed(int speed)
         {
-            return (double)Math.Round((decimal)(2.5 - (speed > 344 ? (.001952 * 3 + (speed - (341 + 3)) * .000952) : (speed - 341) * .001952)), 3);
-        }
-
-        public static string GetJobDescription(Job j)
-        {
-            return ((DescriptionAttribute)typeof(Job).GetMember(j.ToString())[0].GetCustomAttributes(typeof(DescriptionAttribute), false)[0]).Description;
-        }
-    }
-    public enum Job
-    {
-        [Description("PLD")]
-        Paladin,
-        [Description("WAR")]
-        Warrior,
-        [Description("MNK")]
-        Monk,
-        [Description("DRG")]
-        Dragoon,
-        [Description("BRD")]
-        Bard,
-        [Description("BLM")]
-        BlackMage,
-        [Description("WHM")]
-        WhiteMage,
-        [Description("SMN")]
-        Summoner,
-        [Description("SCH")]
-        Scholar,
-        [Description("NIN")]
-        Ninja
-    }
-    public enum GearSlot
-    {
-        MainHand,
-        OffHand,
-        Head,
-        Body,
-        Hands,
-        Waist,
-        Legs,
-        Feet,
-        Neck,
-        Ears,
-        Wrists,
-        Ring
-    }
-    [Serializable]
-    public class Equippable : INotifyPropertyChanged
-    {
-        private Job jobName;
-        private bool canEquip;
-        public Job JobName
-        {
-            get { return jobName; }
-            set
-            {
-                jobName = value;
-                OnPropertyChanged("JobName");
-            }
-        }
-        public bool CanEquip
-        {
-            get { return canEquip; }
-            set
-            {
-                canEquip = value;
-                OnPropertyChanged("CanEquip");
-            }
-        }
-
-        public Equippable() { }
-        public Equippable(Job j, bool equip = false)
-        {
-            jobName = j;
-            canEquip = equip;
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(name));
-            }
-        }
-    }
-    [Serializable]
-    public struct Statistics
-    {
-        public int weaponDamage;
-        public double autoAttackDelay;
-        public int blockRate;
-        public int blockStrength;
-        public int mainStat;
-        public int vit;
-        public int det;
-        public int crit;
-        public int speed;
-        public int acc;
-        public int itemLevel;
-        public int pie;
-        public int parry;
-
-        public int WeaponDamage
-        {
-            get { return weaponDamage; }
-            set { weaponDamage = value; }
-        }
-        public double AutoAttackDelay
-        {
-            get { return autoAttackDelay; }
-            set { autoAttackDelay = value; }
-        }
-        public int BlockRate
-        {
-            get { return blockRate; }
-            set { blockRate = value; }
-        }
-        public int BlockStrength
-        {
-            get { return blockStrength; }
-            set { blockStrength = value; }
-        }
-        public int MainStat
-        {
-            get { return mainStat; }
-            set { mainStat = value; }
-        }
-        public int Vitality
-        {
-            get { return vit; }
-            set { vit = value; }
-        }
-        public int Determination
-        {
-            get { return det; }
-            set { det = value; }
-        }
-        public int CritRate
-        {
-            get { return crit; }
-            set { crit = value; }
-        }
-        public int Speed
-        {
-            get { return speed; }
-            set { speed = value; }
-        }
-        public int Accuracy
-        {
-            get { return acc; }
-            set { acc = value; }
-        }
-        public int ItemLevel
-        {
-            get { return itemLevel; }
-            set { itemLevel = value; }
-        }
-        public int Piety
-        {
-            get { return pie; }
-            set { pie = value; }
-        }
-        public int Parry
-        {
-            get { return parry; }
-            set { parry = value; }
-        }
-
-        public Statistics(int iLvl, int dmg, int stat, int vitality, int determination, int critrate, int speedstat, int accuracy, int piety, int parrying, int blockrate, int blockstrength, double delay)
-        {
-            weaponDamage = dmg;
-            mainStat = stat;
-            vit = vitality;
-            det = determination;
-            crit = critrate;
-            speed = speedstat;
-            acc = accuracy;
-            itemLevel = iLvl;
-            pie = piety;
-            parry = parrying;
-            blockRate = blockrate;
-            blockStrength = blockstrength;
-            autoAttackDelay = delay;
-        }
-
-        public Statistics(int iLvl, int dmg, int stat, int vitality, int determination, int critrate, int speedstat, int accuracy, int piety, int parrying)
-            : this(iLvl, dmg, stat, vitality, determination, critrate, speedstat, accuracy, piety, parrying, 0, 0, 0)
-        {
-        }
-        public Statistics(int iLvl, int dmg, int stat, int vitality, int determination, int critrate, int speedstat, int accuracy)
-            : this(iLvl, dmg, stat, vitality, determination, critrate, speedstat, accuracy, 0, 0, 0, 0, 0)
-        {
-        }
-
-        public static Statistics operator +(Statistics a, Statistics b)
-        {
-            return new Statistics((a.itemLevel + b.itemLevel) / 2, a.weaponDamage + b.weaponDamage, a.mainStat + b.mainStat, a.vit + b.vit, a.det + b.det, a.crit + b.crit, a.speed + b.speed, a.acc + b.acc, a.pie + b.pie, a.parry + b.parry, a.blockRate + b.blockRate, a.blockStrength + b.blockStrength, a.autoAttackDelay + b.autoAttackDelay);
-        }
-        public static Statistics operator -(Statistics a, Statistics b)
-        {
-            return new Statistics((a.itemLevel - b.itemLevel) / 2, a.weaponDamage - b.weaponDamage, a.mainStat - b.mainStat, a.vit - b.vit, a.det - b.det, a.crit - b.crit, a.speed - b.speed, a.acc - b.acc, a.pie - b.pie, a.parry - b.parry, a.blockRate - b.blockRate, a.blockStrength - b.blockStrength, a.autoAttackDelay - b.autoAttackDelay);
-        }
-        public double Value(StatWeights weights)
-        {
-            return weaponDamage * weights.wdmgWeight + mainStat * weights.statWeight + det * weights.dtrWeight + crit * weights.critWeight + speed * weights.spdWeight + pie * weights.pieWeight + vit * weights.vitWeight + parry * weights.parryWeight + blockRate * weights.blockRateWeight + blockStrength * weights.blockStrengthWeight;
-        }
-
-        public override string ToString()
-        {
-            return "WDMG: " + weaponDamage + ", Stat: " + mainStat + ", Acc: " + acc + ", DET: " + det + ", Crit: " + crit + ", Speed: " + speed;
+            return (double)Math.Round((decimal)(2.50256 - CalculateSpdReduction(speed)));
         }
     }
 }

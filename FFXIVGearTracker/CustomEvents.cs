@@ -21,7 +21,7 @@ namespace FFXIV.GearTracking.WinForms
 	#region Event Delegates
 	public delegate void PopOutFormClosing();
 	public delegate void PopOutSlotFilterChanged(string slot);
-	public delegate void PopOutHighestTurnFilterChanged(int highTurn);
+	public delegate void PopOutHighestTurnFilterChanged(double highRaid);
 	public delegate void PopOutChangeCharacter(Character c);
 	public delegate void PopOutUpdateCharacter(Character c);
 
@@ -67,11 +67,11 @@ namespace FFXIV.GearTracking.WinForms
 			}
 		}
 
-		public static void ChangeHighestTurnFilter(int highTurn)
+		public static void ChangeHighestTurnFilter(double highRaid)
 		{
 			if (HighestTurnFilterChangedEvent != null)
 			{
-				HighestTurnFilterChangedEvent(highTurn);
+				HighestTurnFilterChangedEvent(highRaid);
 			}
 		}
 

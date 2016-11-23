@@ -15,7 +15,7 @@ namespace FFXIV.GearTracking.Simulation
 		{
 		}
 
-		protected override double RunSimOnce(Statistics stats, out int GCDCount, bool ignoreResources = false)
+		protected override double RunSimOnce(Statistics stats, out int GCDCount, out double simTime, bool ignoreResources = false)
 		{
 			ResetCachedValues();
 			double totalDmg = 0.0;
@@ -29,6 +29,9 @@ namespace FFXIV.GearTracking.Simulation
 
 				int aetherflowStacks = 3;
 				int aetherflowMax = 3;
+                int aethertrailStacks = 0;
+                int aethertrailMax = 3;
+
                 int currentMP = (int)Math.Round((int)(stats.pie * 1.03) * 7.24 + 1463, 0);
 				int mpMax = 3020;
 				double Bio2Duration = 0.0;
@@ -47,6 +50,12 @@ namespace FFXIV.GearTracking.Simulation
 				double RouseRecast = 0.0;
 				double SpurDuration = 0.0;
 				double SpurRecast = 0.0;
+
+                double EnkindleRecast = 0.0;
+                double dreadwyrmRecast = 0.0;
+                double dreadwyrmDuration = 0.0;
+                double painflareRecast = 0.0;
+                double tridisasterRecast = 0.0;
 
 				double Bio2Mod = 0.0;
 				double MiasmaMod = 0.0;
@@ -71,10 +80,39 @@ namespace FFXIV.GearTracking.Simulation
 				string petSpell = "";
 
 				do
-				{
+                {
+                    EnkindleRecast = Math.Round(EnkindleRecast - 0.001, 3);
+                    dreadwyrmRecast = Math.Round(dreadwyrmRecast - 0.001, 3);
+                    dreadwyrmDuration = Math.Round(dreadwyrmDuration - 0.001, 3);
+                    painflareRecast = Math.Round(painflareRecast - 0.001, 3);
+                    tridisasterRecast = Math.Round(tridisasterRecast - 0.001, 3);
+                    swiftRecast = Math.Round(swiftRecast - 0.001, 3);
+                    RouseDuration = Math.Round(RouseDuration - 0.001, 3);
+                    RouseRecast = Math.Round(RouseRecast - 0.001, 3);
+                    SpurDuration = Math.Round(SpurDuration - 0.001, 3);
+                    SpurRecast = Math.Round(SpurRecast - 0.001, 3);
+                    ragingDuration = Math.Round(ragingDuration - 0.001, 3);
+                    ragingRecast = Math.Round(ragingRecast - 0.001, 3);
+                    Bio2Duration = Math.Round(Bio2Duration - 0.001, 3);
+                    MiasmaDuration = Math.Round(MiasmaDuration - 0.001, 3);
+                    Miasma2Duration = Math.Round(Miasma2Duration - 0.001, 3);
+                    BioDuration = Math.Round(BioDuration - 0.001, 3);
+                    shadowFlareDuration = Math.Round(shadowFlareDuration - 0.001, 3);
+                    festerRecast = Math.Round(festerRecast - 0.001, 3);
+                    energyDrainRecast = Math.Round(energyDrainRecast - 0.001, 3);
+                    aetherflowRecast = Math.Round(aetherflowRecast - 0.001, 3);
+                    GCD = Math.Round(GCD - 0.001, 3);
+                    petGCD = Math.Round(petGCD - 0.001, 3);
+                    contagionRecast = Math.Round(contagionRecast - 0.001, 3);
+                    aerialSlashRecast = Math.Round(aerialSlashRecast - 0.001, 3);
+                    speedBoostDuration = Math.Round(speedBoostDuration - 0.001, 3);
+                    animationDelay = Math.Round(animationDelay - 0.001, 3);
+                    petAnimationDelay = Math.Round(petAnimationDelay - 0.001, 3);
+                    currentTime = Math.Round(currentTime + 0.001, 3);
+
 					if (animationDelay <= 0)
 					{
-						if (ragingRecast <= 0.0 && string.IsNullOrWhiteSpace(castingSpell))
+                        if (ragingRecast <= 0.0 && string.IsNullOrWhiteSpace(castingSpell) && dreadwyrmDuration > 0)
 						{
 							ragingRecast = 180.0;
 							ragingDuration = 20.0;
@@ -107,6 +145,10 @@ namespace FFXIV.GearTracking.Simulation
 										totalDmg += SpellDamage("Ruin", stats) * (ragingDuration > 0.0 ? 1.2 : 1.0);
 										currentMP -= 79;
 										break;
+                                    case "Ruin III":
+                                        totalDmg += SpellDamage("Ruin III", stats) * (ragingDuration > 0.0 ? 1.2 : 1.0);
+                                        currentMP -= 79;
+                                        break;
 								}
 								GCDCount++;
 								castingSpell = "";
@@ -236,7 +278,7 @@ namespace FFXIV.GearTracking.Simulation
 					if (currentTime >= petCastComplete && !string.IsNullOrWhiteSpace(petSpell))
 					{
 						totalDmg += SpellDamage(petSpell, stats) * (1 + (RouseDuration > 0 ? 0.4 : 0) + (SpurDuration > 0 ? 0.4 : 0));
-						if ((double)RNG.Next(100000) / 1000.0 <= (int)(0.0697 * stats.crit - 18.437))
+						if ((double)RNG.Next(100000) / 1000.0 <= Common.CalculateCritRate(stats.crit, 1) * 100.0)
 						{
 							if (RNG.Next(10) < 2)
 							{
@@ -248,8 +290,8 @@ namespace FFXIV.GearTracking.Simulation
 					else if (petGCD <= 0.0 && petActive && string.IsNullOrWhiteSpace(petSpell) && petAnimationDelay <= 0.0)
 					{
 						petSpell = "Wind Blade";
-						petCastComplete = currentTime + 1.0;
-						petGCD = 3.0;
+						petCastComplete = currentTime + CastSpeed(1.0, stats.speed);
+						petGCD = CastSpeed(3.0, stats.speed);
 					}
 					if (petAnimationDelay <= 0.0 && string.IsNullOrWhiteSpace(petSpell))
 					{
@@ -279,57 +321,35 @@ namespace FFXIV.GearTracking.Simulation
 					{
 						if (Bio2Duration >= 0)
 						{ //35 pot
-							totalDmg += SpellDamage("Bio2DoT", stats) * Bio2Mod;
+                            totalDmg += SpellDamage("Bio2DoT", stats, Bio2Mod);
 						}
 						if (MiasmaDuration >= 0)
 						{ //35 pot
-							totalDmg += SpellDamage("MiasmaDoT", stats) * MiasmaMod;
+                            totalDmg += SpellDamage("MiasmaDoT", stats, MiasmaMod);
 						}
 						if (Miasma2Duration >= 0)
 						{ //10 pot
-							totalDmg += SpellDamage("Miasma2DoT", stats) * Miasma2Mod;
+                            totalDmg += SpellDamage("Miasma2DoT", stats, Miasma2Mod);
 						}
 						if (BioDuration >= 0)
 						{ // 40 pot
-							totalDmg += SpellDamage("BioDoT", stats) * BioMod;
+                            totalDmg += SpellDamage("BioDoT", stats, BioMod);
 						}
 						if (shadowFlareDuration >= 0 && shadowFlareDuration <= 30.0)
 						{ // 25 pot
-							totalDmg += SpellDamage("FlareDoT", stats) * FlareMod;
+                            totalDmg += SpellDamage("FlareDoT", stats, FlareMod);
 						}
 						currentMP = Math.Min(currentMP + (int)(mpMax * 0.02), mpMax);
 						nextTick = GetNextServerTick(nextTick);
 					}
-					swiftRecast -= 0.001;
-					RouseDuration -= 0.001;
-					RouseRecast -= 0.001;
-					SpurDuration -= 0.001;
-					SpurRecast -= 0.001;
-					ragingDuration -= 0.001;
-					ragingRecast -= 0.001;
-					Bio2Duration -= 0.001;
-					MiasmaDuration -= 0.001;
-					Miasma2Duration -= 0.001;
-					BioDuration -= 0.001;
-					shadowFlareDuration -= 0.001;
-					festerRecast -= 0.001;
-					energyDrainRecast -= 0.001;
-					aetherflowRecast -= 0.001;
-					GCD -= 0.001;
-					petGCD -= 0.001;
-					contagionRecast -= 0.001;
-					aerialSlashRecast -= 0.001;
-					speedBoostDuration -= 0.001;
-					animationDelay -= 0.001;
-					petAnimationDelay -= 0.001;
-					currentTime += 0.001;
 				} while (currentTime <= SimMinutes * 60);
 			}
 			GCDCount /= SimIterations;
+            simTime = 0;
 			return totalDmg;
 		}
 
-		private double SpellDamage(string spellName, Statistics stats)
+		private double SpellDamage(string spellName, Statistics stats, double damageBuff = 1.0)
 		{
 			double potency;
 			switch (spellName)
@@ -367,15 +387,26 @@ namespace FFXIV.GearTracking.Simulation
 				case "Energy Drain":
 					potency = 150;
 					break;
+                case "Ruin III":
+                    potency = 120;
+                    break;
+                case "Painflare":
+                    potency = 200;
+                    break;
+                case "Deathflare":
+                    potency = 400;
+                    break;
 				default:
 					potency = 0.0;
 					break;
 			}
-			if (baseSkillDmg < 0)
-			{
-				baseSkillDmg = Core.Common.CalculateDamage(stats) * 1.3; //Maim and Mend
-			}
-			double spellDamage = baseSkillDmg * potency / 100.0;
+
+            damageBuff *= 1.3; // Maim and Mend
+            damageBuff *= (spellName.Contains("DoT") ? Common.CalculateDoTSpeedScalar(stats.speed) : 1);
+			
+            baseSkillDmg = Common.CalculateDamage(stats, true, damageBuff); //Maim and Mend
+
+			double spellDamage = baseSkillDmg * potency * 0.01005;
 			return spellDamage;
 		}
 	}

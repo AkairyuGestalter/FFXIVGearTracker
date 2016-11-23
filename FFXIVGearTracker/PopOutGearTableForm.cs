@@ -16,7 +16,7 @@ namespace FFXIV.GearTracking.WinForms
 	{
 		private string slotFilter;
 		private int currentJob;
-		private int highTurnFilter;
+		private double highRaidFilter;
 
 		private Character activeChar;
 
@@ -37,7 +37,7 @@ namespace FFXIV.GearTracking.WinForms
 
 			slotFilter = "";
 			currentJob = 0;
-			highTurnFilter = Common.HighestTurn;
+            highRaidFilter = Common.HighestRaid;
 
 			CustomEvents.SlotFilterChangedEvent += PopOutGearTableForm_SlotFilterChanged;
 			CustomEvents.HighestTurnFilterChangedEvent += PopOutGearTableForm_HighestTurnFilterChanged;
@@ -104,9 +104,9 @@ namespace FFXIV.GearTracking.WinForms
 			ChangeCharacter(c);
 		}
 
-		void PopOutGearTableForm_HighestTurnFilterChanged(int highTurn)
+		void PopOutGearTableForm_HighestTurnFilterChanged(double highRaid)
 		{
-			ChangeHighestTurnFilter(highTurn);
+			ChangeHighestTurnFilter(highRaid);
 		}
 
 		void PopOutGearTableForm_SlotFilterChanged(string slot)
@@ -117,7 +117,7 @@ namespace FFXIV.GearTracking.WinForms
 		private void ChangeSlotFilter(string slot)
 		{
 			slotFilter = slot;
-			FilterGear(slotFilter, highTurnFilter);
+			FilterGear(slotFilter, highRaidFilter);
 		}
 
 		private void ChangeJob(int j)
@@ -128,16 +128,16 @@ namespace FFXIV.GearTracking.WinForms
 			{
 				if (i.canEquip.Contains((Job)j))
 				{
-					PopOutGearDisplayGridView.Rows.Add(activeChar.ownedItems.Contains(i.name), i, i.sourceTurn, i.equipSlot, i.itemStats.weaponDamage, i.itemStats.mainStat, i.itemStats.vit, i.itemStats.pie, i.itemStats.acc, i.itemStats.det, i.itemStats.crit, i.itemStats.speed, i.itemStats.parry, Character.CalcGearVal(i, activeChar.currentWeights));
+					PopOutGearDisplayGridView.Rows.Add(activeChar.ownedItems.Contains(i.name), i, i.sourceRaid, i.equipSlot, i.itemStats.weaponDamage, i.itemStats.mainStat, i.itemStats.vit, i.itemStats.pie, i.itemStats.acc, i.itemStats.det, i.itemStats.crit, i.itemStats.speed, i.itemStats.parry, Character.CalcGearVal(i, activeChar.currentWeights));
 				}
 			}
-			FilterGear(slotFilter, highTurnFilter);
+			FilterGear(slotFilter, highRaidFilter);
 		}
 
-		private void ChangeHighestTurnFilter(int highTurn)
+		private void ChangeHighestTurnFilter(double highRaid)
 		{
-			highTurnFilter = highTurn;
-			FilterGear(slotFilter, highTurnFilter);
+			highRaidFilter = highRaid;
+			FilterGear(slotFilter, highRaidFilter);
 		}
 
 		private void ChangeCharacter(Character c)
@@ -153,13 +153,13 @@ namespace FFXIV.GearTracking.WinForms
 			PopGearValues();
 		}
 
-		private void FilterGear(string slotFilter, int maxTurn)
+		private void FilterGear(string slotFilter, double maxRaid)
 		{
 			foreach (DataGridViewRow row in PopOutGearDisplayGridView.Rows)
 			{
 				try
 				{
-					if ((slotFilter.Equals(((GearSlot)row.Cells["Slot"].Value).ToString()) || string.IsNullOrWhiteSpace(slotFilter)) && maxTurn >= (int)row.Cells["Turn"].Value)
+					if ((slotFilter.Equals(((GearSlot)row.Cells["Slot"].Value).ToString()) || string.IsNullOrWhiteSpace(slotFilter)) && maxRaid >= (int)row.Cells["Raid"].Value)
 					{
 						row.Visible = true;
 					}

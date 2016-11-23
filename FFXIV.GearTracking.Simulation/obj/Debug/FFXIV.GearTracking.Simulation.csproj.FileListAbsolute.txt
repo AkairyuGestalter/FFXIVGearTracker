@@ -6,3 +6,11 @@ C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.Simulation\
 C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.Simulation\obj\Debug\FFXIV.GearTracking.Simulation.csprojResolveAssemblyReference.cache
 C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.Simulation\obj\Debug\FFXIV.GearTracking.Simulation.dll
 C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.Simulation\obj\Debug\FFXIV.GearTracking.Simulation.pdb
+D:\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.Simulation\bin\Debug\FFXIV.GearTracking.Simulation.dll
+D:\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.Simulation\bin\Debug\FFXIV.GearTracking.Simulation.pdb
+D:\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.Simulation\bin\Debug\FFXIV.GearTracking.Core.dll
+D:\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.Simulation\bin\Debug\NCalc.dll
+D:\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.Simulation\bin\Debug\FFXIV.GearTracking.Core.pdb
+D:\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.Simulation\obj\Debug\FFXIV.GearTracking.Simulation.csprojResolveAssemblyReference.cache
+D:\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.Simulation\obj\Debug\FFXIV.GearTracking.Simulation.dll
+D:\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.Simulation\obj\Debug\FFXIV.GearTracking.Simulation.pdb

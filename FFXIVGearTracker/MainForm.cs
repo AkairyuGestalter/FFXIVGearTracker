@@ -74,7 +74,7 @@ namespace FFXIV.GearTracking.WinForms
             EditCritFormTextBox.Text = Common.CritFormula;
             EditParryFormTextBox.Text = Common.ParryFormula;
             EditVITPerSTR.Value = (decimal)Common.VitPerSTR;
-            EditHighestTurn.Value = (decimal)Common.HighestTurn;
+            EditHighestTurn.Value = (decimal)Common.HighestRaid;
             #endregion
 
             CustomEvents.ItemOwnedChangeEvent += CustomEvents_ItemOwnedChangeEvent;
@@ -221,10 +221,10 @@ namespace FFXIV.GearTracking.WinForms
                 activeChar.ownedAccReqListB = (int[])activeChar.accuracyNeeds.Clone();
             }
             activeChar.currentWeights = ideal.gearWeights;
-            HighestTurn.Value = Math.Min(activeChar.clearedTurn, Common.HighestTurn);
+            HighestTurn.Value = (decimal)Math.Min(activeChar.clearedRaid, Common.HighestRaid);
             JobSelect.SelectedValue = activeChar.currentJob;
             JobSelect.Text = activeChar.currentJob.ToString();
-            HighestTurn.Value = activeChar.clearedTurn;
+            //HighestTurn.Value = activeChar.clearedRaid;
             AccuracyRequirement.Value = activeChar.accuracyNeeds[(int)activeChar.currentJob];
             SpdBreakPoint.Value = Common.speedBreakPoints[(int)activeChar.currentJob];
             SpdBreakCheckBox.Checked = Common.UseSpeedBreakPoint;
@@ -314,7 +314,7 @@ namespace FFXIV.GearTracking.WinForms
             {
                 if (i.canEquip.Contains(activeChar.currentJob))
                 {
-                    GearDisplayGridView.Rows.Add(activeChar.ownedItems.Contains(i.name), i, i.sourceTurn, i.equipSlot, i.itemStats.weaponDamage, i.itemStats.mainStat, i.itemStats.vit, i.itemStats.pie, i.itemStats.acc, i.itemStats.det, i.itemStats.crit, i.itemStats.speed, i.itemStats.parry, Character.CalcGearVal(i, activeChar.currentWeights));
+                    GearDisplayGridView.Rows.Add(activeChar.ownedItems.Contains(i.name), i, i.sourceRaid, i.equipSlot, i.itemStats.weaponDamage, i.itemStats.mainStat, i.itemStats.vit, i.itemStats.pie, i.itemStats.acc, i.itemStats.det, i.itemStats.crit, i.itemStats.speed, i.itemStats.parry, Character.CalcGearVal(i, activeChar.currentWeights));
                     switch (i.equipSlot)
                     {
                         case GearSlot.MainHand:
@@ -405,7 +405,7 @@ namespace FFXIV.GearTracking.WinForms
                 PopGearSet(IdealCompareBGroup, activeChar.idealCoilFoodB[(int)activeChar.currentJob]);
                 PopGearValues();
                 CustomEvents.ChangeCharacter(activeChar);
-                FilterGear((GearSlotFilter.SelectedItem != null ? (string)GearSlotFilter.SelectedItem : ""), (HideHigherTurnGearCheckBox.Checked ? activeChar.clearedTurn : Common.HighestTurn));
+                FilterGear((GearSlotFilter.SelectedItem != null ? (string)GearSlotFilter.SelectedItem : ""), (HideHigherTurnGearCheckBox.Checked ? activeChar.clearedRaid : Common.HighestRaid));
             }
             catch { }
         }
@@ -1037,64 +1037,64 @@ namespace FFXIV.GearTracking.WinForms
 
         private void RecalcProgression_Click(object sender, EventArgs e)
         {
-            calcThread = new Thread(() => RecalculateGearSet(ref activeChar.progressionDamage[(int)activeChar.currentJob], ProgressionDamageGroup, activeChar.clearedTurn, 0, activeChar.tomeTier[(int)activeChar.currentJob], false, activeChar.relicTier[(int)activeChar.currentJob], (Common.UseSpeedBreakPoint ? Common.speedBreakPoints[(int)activeChar.currentJob] : 341)));
+            calcThread = new Thread(() => RecalculateGearSet(ref activeChar.progressionDamage[(int)activeChar.currentJob], ProgressionDamageGroup, activeChar.clearedRaid, 0, activeChar.tomeTier[(int)activeChar.currentJob], false, activeChar.relicTier[(int)activeChar.currentJob], (Common.UseSpeedBreakPoint ? Common.speedBreakPoints[(int)activeChar.currentJob] : 341)));
             calcThread.Start();
         }
 
         private void RecalcProgressionA_Click(object sender, EventArgs e)
         {
-            calcThread = new Thread(() => RecalculateGearSet(ref activeChar.progressionCoilFoodA[(int)activeChar.currentJob], ProgressionCompareAGroup, activeChar.clearedTurn, activeChar.accuracyNeeds[(int)activeChar.currentJob], activeChar.tomeTier[(int)activeChar.currentJob], false, activeChar.relicTier[(int)activeChar.currentJob], (Common.UseSpeedBreakPoint ? Common.speedBreakPoints[(int)activeChar.currentJob] : 341)));
+            calcThread = new Thread(() => RecalculateGearSet(ref activeChar.progressionCoilFoodA[(int)activeChar.currentJob], ProgressionCompareAGroup, activeChar.clearedRaid, activeChar.accuracyNeeds[(int)activeChar.currentJob], activeChar.tomeTier[(int)activeChar.currentJob], false, activeChar.relicTier[(int)activeChar.currentJob], (Common.UseSpeedBreakPoint ? Common.speedBreakPoints[(int)activeChar.currentJob] : 341)));
             calcThread.Start();
         }
 
         private void RecalcProgressionB_Click(object sender, EventArgs e)
         {
-            calcThread = new Thread(() => RecalculateGearSet(ref activeChar.progressionCoilFoodB[(int)activeChar.currentJob], ProgressionCompareBGroup, activeChar.clearedTurn, activeChar.accuracyNeeds[(int)activeChar.currentJob], activeChar.tomeTier[(int)activeChar.currentJob], false, activeChar.relicTier[(int)activeChar.currentJob], (Common.UseSpeedBreakPoint ? Common.speedBreakPoints[(int)activeChar.currentJob] : 341)));
+            calcThread = new Thread(() => RecalculateGearSet(ref activeChar.progressionCoilFoodB[(int)activeChar.currentJob], ProgressionCompareBGroup, activeChar.clearedRaid, activeChar.accuracyNeeds[(int)activeChar.currentJob], activeChar.tomeTier[(int)activeChar.currentJob], false, activeChar.relicTier[(int)activeChar.currentJob], (Common.UseSpeedBreakPoint ? Common.speedBreakPoints[(int)activeChar.currentJob] : 341)));
             calcThread.Start();
         }
 
         private void RecalcIdeal_Click(object sender, EventArgs e)
         {
-            calcThread = new Thread(() => RecalculateGearSet(ref activeChar.idealDamage[(int)activeChar.currentJob], IdealDamageGroup, Common.HighestTurn, 0, (LimitIdealTomeTier.Checked ? activeChar.tomeTier[(int)activeChar.currentJob] : -1), false, (LimitIdealRelicTier.Checked ? activeChar.relicTier[(int)activeChar.currentJob] : -1), (Common.UseSpeedBreakPoint ? Common.speedBreakPoints[(int)activeChar.currentJob] : 341)));
+            calcThread = new Thread(() => RecalculateGearSet(ref activeChar.idealDamage[(int)activeChar.currentJob], IdealDamageGroup, Common.HighestRaid, 0, (LimitIdealTomeTier.Checked ? activeChar.tomeTier[(int)activeChar.currentJob] : -1), false, (LimitIdealRelicTier.Checked ? activeChar.relicTier[(int)activeChar.currentJob] : -1), (Common.UseSpeedBreakPoint ? Common.speedBreakPoints[(int)activeChar.currentJob] : 341)));
             calcThread.Start();
         }
 
         private void RecalcIdealA_Click(object sender, EventArgs e)
         {
-            calcThread = new Thread(() => RecalculateGearSet(ref activeChar.idealCoilFoodA[(int)activeChar.currentJob], IdealCompareAGroup, Common.HighestTurn, activeChar.accuracyNeeds[(int)activeChar.currentJob], (LimitIdealTomeTier.Checked ? activeChar.tomeTier[(int)activeChar.currentJob] : -1), false, (LimitIdealRelicTier.Checked ? activeChar.relicTier[(int)activeChar.currentJob] : -1), (Common.UseSpeedBreakPoint ? Common.speedBreakPoints[(int)activeChar.currentJob] : 341)));
+            calcThread = new Thread(() => RecalculateGearSet(ref activeChar.idealCoilFoodA[(int)activeChar.currentJob], IdealCompareAGroup, Common.HighestRaid, activeChar.accuracyNeeds[(int)activeChar.currentJob], (LimitIdealTomeTier.Checked ? activeChar.tomeTier[(int)activeChar.currentJob] : -1), false, (LimitIdealRelicTier.Checked ? activeChar.relicTier[(int)activeChar.currentJob] : -1), (Common.UseSpeedBreakPoint ? Common.speedBreakPoints[(int)activeChar.currentJob] : 341)));
             calcThread.Start();
         }
 
         private void RecalcIdealB_Click(object sender, EventArgs e)
         {
-            calcThread = new Thread(() => RecalculateGearSet(ref activeChar.idealCoilFoodB[(int)activeChar.currentJob], IdealCompareBGroup, Common.HighestTurn, activeChar.accuracyNeeds[(int)activeChar.currentJob], (LimitIdealTomeTier.Checked ? activeChar.tomeTier[(int)activeChar.currentJob] : -1), false, (LimitIdealRelicTier.Checked ? activeChar.relicTier[(int)activeChar.currentJob] : -1), (Common.UseSpeedBreakPoint ? Common.speedBreakPoints[(int)activeChar.currentJob] : 341)));
+            calcThread = new Thread(() => RecalculateGearSet(ref activeChar.idealCoilFoodB[(int)activeChar.currentJob], IdealCompareBGroup, Common.HighestRaid, activeChar.accuracyNeeds[(int)activeChar.currentJob], (LimitIdealTomeTier.Checked ? activeChar.tomeTier[(int)activeChar.currentJob] : -1), false, (LimitIdealRelicTier.Checked ? activeChar.relicTier[(int)activeChar.currentJob] : -1), (Common.UseSpeedBreakPoint ? Common.speedBreakPoints[(int)activeChar.currentJob] : 341)));
             calcThread.Start();
         }
 
         private void RecalcOwned_Click(object sender, EventArgs e)
         {
-            calcThread = new Thread(() => RecalculateGearSet(ref activeChar.ownedDamage[(int)activeChar.currentJob], OwnedDamageGroup, Common.HighestTurn, 0, (LimitIdealTomeTier.Checked ? activeChar.tomeTier[(int)activeChar.currentJob] : -1), true, (LimitIdealRelicTier.Checked ? activeChar.relicTier[(int)activeChar.currentJob] : -1), (Common.UseSpeedBreakPoint ? Common.speedBreakPoints[(int)activeChar.currentJob] : 341)));
+            calcThread = new Thread(() => RecalculateGearSet(ref activeChar.ownedDamage[(int)activeChar.currentJob], OwnedDamageGroup, Common.HighestRaid, 0, (LimitIdealTomeTier.Checked ? activeChar.tomeTier[(int)activeChar.currentJob] : -1), true, (LimitIdealRelicTier.Checked ? activeChar.relicTier[(int)activeChar.currentJob] : -1), (Common.UseSpeedBreakPoint ? Common.speedBreakPoints[(int)activeChar.currentJob] : 341)));
             calcThread.Start();
         }
 
         private void RecalcOwnedA_Click(object sender, EventArgs e)
         {
-            calcThread = new Thread(() => RecalculateGearSet(ref activeChar.ownedCoilFoodA[(int)activeChar.currentJob], OwnedCompareAGroup, Common.HighestTurn, (OwnedSpecificAccCheckbox.Checked ? activeChar.ownedAccReqListA[(int)activeChar.currentJob] : activeChar.accuracyNeeds[(int)activeChar.currentJob]), (LimitIdealTomeTier.Checked ? activeChar.tomeTier[(int)activeChar.currentJob] : -1), true, (LimitIdealRelicTier.Checked ? activeChar.relicTier[(int)activeChar.currentJob] : -1), (Common.UseSpeedBreakPoint ? Common.speedBreakPoints[(int)activeChar.currentJob] : 341)));
+            calcThread = new Thread(() => RecalculateGearSet(ref activeChar.ownedCoilFoodA[(int)activeChar.currentJob], OwnedCompareAGroup, Common.HighestRaid, (OwnedSpecificAccCheckbox.Checked ? activeChar.ownedAccReqListA[(int)activeChar.currentJob] : activeChar.accuracyNeeds[(int)activeChar.currentJob]), (LimitIdealTomeTier.Checked ? activeChar.tomeTier[(int)activeChar.currentJob] : -1), true, (LimitIdealRelicTier.Checked ? activeChar.relicTier[(int)activeChar.currentJob] : -1), (Common.UseSpeedBreakPoint ? Common.speedBreakPoints[(int)activeChar.currentJob] : 341)));
             calcThread.Start();
         }
 
         private void RecalcOwnedB_Click(object sender, EventArgs e)
         {
-            calcThread = new Thread(() => RecalculateGearSet(ref activeChar.ownedCoilFoodB[(int)activeChar.currentJob], OwnedCompareBGroup, Common.HighestTurn, (OwnedSpecificAccCheckbox.Checked ? activeChar.ownedAccReqListB[(int)activeChar.currentJob] : activeChar.accuracyNeeds[(int)activeChar.currentJob]), (LimitIdealTomeTier.Checked ? activeChar.tomeTier[(int)activeChar.currentJob] : -1), true, (LimitIdealRelicTier.Checked ? activeChar.relicTier[(int)activeChar.currentJob] : -1), (Common.UseSpeedBreakPoint ? Common.speedBreakPoints[(int)activeChar.currentJob] : 341)));
+            calcThread = new Thread(() => RecalculateGearSet(ref activeChar.ownedCoilFoodB[(int)activeChar.currentJob], OwnedCompareBGroup, Common.HighestRaid, (OwnedSpecificAccCheckbox.Checked ? activeChar.ownedAccReqListB[(int)activeChar.currentJob] : activeChar.accuracyNeeds[(int)activeChar.currentJob]), (LimitIdealTomeTier.Checked ? activeChar.tomeTier[(int)activeChar.currentJob] : -1), true, (LimitIdealRelicTier.Checked ? activeChar.relicTier[(int)activeChar.currentJob] : -1), (Common.UseSpeedBreakPoint ? Common.speedBreakPoints[(int)activeChar.currentJob] : 341)));
             calcThread.Start();
         }
 
-        private void RecalculateGearSet(ref GearSet startingSet, GroupBox popBox, int turnLimit, int accuracyReq, double tomeTierLimit, bool ownedGearOnly, int relicTierLimit, int speedBreakPoint = 341)
+        private void RecalculateGearSet(ref GearSet startingSet, GroupBox popBox, double raidLimit, int accuracyReq, double tomeTierLimit, bool ownedGearOnly, int relicTierLimit, int speedBreakPoint = 341)
         {
             ActivateButtons(false);
             StartProgressBar();
 
-            startingSet = CalcGearSet(activeChar.currentJob, startingSet, turnLimit, accuracyReq, tomeTierLimit, ownedGearOnly, relicTierLimit, speedBreakPoint);
+            startingSet = CalcGearSet(activeChar.currentJob, startingSet, raidLimit, accuracyReq, tomeTierLimit, ownedGearOnly, relicTierLimit, speedBreakPoint);
             if (popBox.Name == "IdealDamageGroup")
             {
                 activeChar.currentWeights = activeChar.idealDamage[(int)activeChar.currentJob].gearWeights;
@@ -2599,10 +2599,10 @@ namespace FFXIV.GearTracking.WinForms
 
         private void HighestTurn_ValueChanged(object sender, EventArgs e)
         {
-            activeChar.clearedTurn = (int)HighestTurn.Value;
+            activeChar.clearedRaid = (double)HighestTurn.Value;
         }
 
-        private GearSet CalcGearSet(Job j, GearSet startSet, int turnLimit, int accReq, double tomeTierLimit, bool ownedGearOnly, double relicTierLimit, int speedBreakPoint)
+        private GearSet CalcGearSet(Job j, GearSet startSet, double raidLimit, int accReq, double tomeTierLimit, bool ownedGearOnly, double relicTierLimit, int speedBreakPoint)
         {
             //Load applicable gear into slot-specific lists
             List<Item> mainHands = new List<Item>();
@@ -2621,7 +2621,7 @@ namespace FFXIV.GearTracking.WinForms
             int maxiLevel = 0;
             foreach (Item i in Common.gearDictionary.Values)
             {
-                if (i.canEquip.Contains(j) && (i.sourceTurn <= turnLimit || activeChar.ownedItems.Contains(i.name)) && (i.tomeTier <= tomeTierLimit || tomeTierLimit == -1) && (i.relicTier <= relicTierLimit || relicTierLimit == -1) &&
+                if (i.canEquip.Contains(j) && (i.sourceRaid <= raidLimit || activeChar.ownedItems.Contains(i.name)) && (i.tomeTier <= tomeTierLimit || tomeTierLimit == -1) && (i.relicTier <= relicTierLimit || relicTierLimit == -1) &&
                     (!ownedGearOnly || activeChar.ownedItems.Contains(i.name)))
                 {
                     if (maxiLevel < i.itemStats.itemLevel)
@@ -2677,20 +2677,22 @@ namespace FFXIV.GearTracking.WinForms
             bool changesThisSlot = false;
             int iterations = 0;
             GearSet tempSet;
-            if (turnLimit < Common.HighestTurn || tomeTierLimit > -1 || relicTierLimit > -1 || accReq > 341 || ownedGearOnly)
+            if (raidLimit < Common.HighestRaid || tomeTierLimit > -1 || relicTierLimit > -1 || accReq > 341 || ownedGearOnly)
             {
                 tempSet = activeChar.idealDamage[(int)j].Clone();
             }
             else
             {
-                tempSet = startSet.Clone();
+                tempSet = new GearSet();// startSet.Clone();
             }
             if (tempSet.baseStats.mainStat == 0)
             {
                 tempSet.baseStats = activeChar.baseStats[(int)j];
+                tempSet.CalcGearStats();
+                tempSet.CalcTotalStats();
             }
             tempSet.meal = new Food();
-            if (!(turnLimit < Common.HighestTurn || tomeTierLimit > -1 || relicTierLimit > -1 || accReq > 341 || ownedGearOnly))
+            if (!(raidLimit < Common.HighestRaid || tomeTierLimit > -1 || relicTierLimit > -1 || accReq > 341 || ownedGearOnly))
             {
                 tempSet.gearWeights = Calculation.CalcStatWeights(j, tempSet.totalStats, Common.SimulateWeights);
             }
@@ -2928,7 +2930,7 @@ namespace FFXIV.GearTracking.WinForms
                         iterations++;
                         continue;
                     }
-                    else if (!(turnLimit < Common.HighestTurn || tomeTierLimit > -1 || relicTierLimit > -1 || accReq > 341 || ownedGearOnly))
+                    else if (!(raidLimit < Common.HighestRaid || tomeTierLimit > -1 || relicTierLimit > -1 || accReq > 341 || ownedGearOnly))
                     {
                         tempSet.gearWeights = Calculation.CalcStatWeights(j, tempSet.totalStats, Common.SimulateWeights);
                     }
@@ -3387,7 +3389,7 @@ namespace FFXIV.GearTracking.WinForms
         private void ClearGearSlotFilter_Click(object sender, EventArgs e)
         {
             GearSlotFilter.SelectedItem = null;
-            FilterGear("", (HideHigherTurnGearCheckBox.Checked ? activeChar.clearedTurn : Common.HighestTurn));
+            FilterGear("", (HideHigherTurnGearCheckBox.Checked ? activeChar.clearedRaid : Common.HighestRaid));
             CustomEvents.ChangeSlotFilter("");
         }
 
@@ -3395,23 +3397,23 @@ namespace FFXIV.GearTracking.WinForms
         {
             if (GearSlotFilter.SelectedItem != null)
             {
-                FilterGear((string)GearSlotFilter.SelectedItem, (HideHigherTurnGearCheckBox.Checked ? activeChar.clearedTurn : Common.HighestTurn));
+                FilterGear((string)GearSlotFilter.SelectedItem, (HideHigherTurnGearCheckBox.Checked ? activeChar.clearedRaid : Common.HighestRaid));
                 CustomEvents.ChangeSlotFilter((string)GearSlotFilter.SelectedItem);
             }
             else
             {
-                FilterGear("", (HideHigherTurnGearCheckBox.Checked ? activeChar.clearedTurn : Common.HighestTurn));
+                FilterGear("", (HideHigherTurnGearCheckBox.Checked ? activeChar.clearedRaid : Common.HighestRaid));
                 CustomEvents.ChangeSlotFilter("");
             }
         }
 
-        private void FilterGear(string slotFilter, int maxTurn)
+        private void FilterGear(string slotFilter, double maxRaid)
         {
             foreach (DataGridViewRow row in GearDisplayGridView.Rows)
             {
                 try
                 {
-                    if ((slotFilter.Equals(((GearSlot)row.Cells["Slot"].Value).ToString()) || string.IsNullOrWhiteSpace(slotFilter)) && maxTurn >= (int)row.Cells["Turn"].Value)
+                    if ((slotFilter.Equals(((GearSlot)row.Cells["Slot"].Value).ToString()) || string.IsNullOrWhiteSpace(slotFilter)) && maxRaid >= (double)row.Cells["Raid"].Value)
                     {
                         row.Visible = true;
                     }
@@ -3420,7 +3422,7 @@ namespace FFXIV.GearTracking.WinForms
                         row.Visible = false;
                     }
                 }
-                catch { }
+                catch (Exception filterEx) { }
             }
         }
 
@@ -3520,13 +3522,13 @@ namespace FFXIV.GearTracking.WinForms
         {
             if (GearSlotFilter.SelectedItem != null)
             {
-                FilterGear((string)GearSlotFilter.SelectedItem, (HideHigherTurnGearCheckBox.Checked ? activeChar.clearedTurn : Common.HighestTurn));
+                FilterGear((string)GearSlotFilter.SelectedItem, (HideHigherTurnGearCheckBox.Checked ? activeChar.clearedRaid : Common.HighestRaid));
             }
             else
             {
-                FilterGear("", (HideHigherTurnGearCheckBox.Checked ? activeChar.clearedTurn : Common.HighestTurn));
+                FilterGear("", (HideHigherTurnGearCheckBox.Checked ? activeChar.clearedRaid : Common.HighestRaid));
             }
-            CustomEvents.ChangeHighestTurnFilter((HideHigherTurnGearCheckBox.Checked ? activeChar.clearedTurn : Common.HighestTurn));
+            CustomEvents.ChangeHighestTurnFilter((HideHigherTurnGearCheckBox.Checked ? activeChar.clearedRaid : Common.HighestRaid));
         }
 
         private void PopOutGearButton_Click(object sender, EventArgs e)
@@ -3638,6 +3640,14 @@ namespace FFXIV.GearTracking.WinForms
                                 i.canEquip = new List<Job>();
                                 i.canEquip.Add((Job)Enum.Parse(typeof(Job), (string)row.Cells["Job"].Value));
                                 i.equipSlot = (GearSlot)Enum.Parse(typeof(GearSlot), (string)row.Cells["EditSlot"].Value);
+                                /*if (i.canEquip.Contains(Core.Job.BlackMage) && i.equipSlot != Core.GearSlot.MainHand)
+                                {
+                                    i.canEquip.Add(Core.Job.Summoner);
+                                }
+                                else if (i.canEquip.Contains(Core.Job.Summoner) && i.equipSlot != Core.GearSlot.MainHand)
+                                {
+                                    i.canEquip.Add(Core.Job.BlackMage);
+                                }*/
                                 i.twoHand = GetCellAsBool(row.Cells["IsTwoHand"]);
                                 i.itemStats.weaponDamage = GetCellAsInt(row.Cells["EditWDMG"]);
                                 i.itemStats.autoAttackDelay = GetCellAsDouble(row.Cells["Delay"]);
@@ -3651,7 +3661,7 @@ namespace FFXIV.GearTracking.WinForms
                                 i.itemStats.crit = GetCellAsInt(row.Cells["EditCrit"]);
                                 i.itemStats.speed = GetCellAsInt(row.Cells["EditSpeed"]);
                                 i.itemStats.parry = GetCellAsInt(row.Cells["EditParry"]);
-                                i.sourceTurn = GetCellAsInt(row.Cells["CoilTurn"]);
+                                i.sourceRaid = GetCellAsDouble(row.Cells["RaidTier"]);
                                 i.tomeTier = GetCellAsDouble(row.Cells["TomeTier"]);
                                 i.tomeCost = GetCellAsInt(row.Cells["TomeCost"]);
                                 i.relicTier = GetCellAsDouble(row.Cells["RelicTier"]);
@@ -3679,7 +3689,7 @@ namespace FFXIV.GearTracking.WinForms
                 foreach (Job j in i.canEquip)
                 {
                     //name, ilvl, unique, job, slot, twohand?, wdmg, stat, vit, acc, det, crit, speed
-                    GearEditGridView.Rows.Add(i.name, i.itemStats.itemLevel, i.unique.ToString(), j.ToString(), i.equipSlot.ToString(), i.twoHand.ToString(), i.itemStats.weaponDamage, i.itemStats.autoAttackDelay, i.itemStats.blockRate, i.itemStats.blockStrength, i.itemStats.mainStat, i.itemStats.vit, i.itemStats.acc, i.itemStats.det, i.itemStats.crit, i.itemStats.speed, i.itemStats.pie, i.itemStats.parry, i.sourceTurn, i.tomeTier, i.tomeCost, i.relicTier);
+                    GearEditGridView.Rows.Add(i.name, i.itemStats.itemLevel, i.unique.ToString(), j.ToString(), i.equipSlot.ToString(), i.twoHand.ToString(), i.itemStats.weaponDamage, i.itemStats.autoAttackDelay, i.itemStats.blockRate, i.itemStats.blockStrength, i.itemStats.mainStat, i.itemStats.vit, i.itemStats.acc, i.itemStats.det, i.itemStats.crit, i.itemStats.speed, i.itemStats.pie, i.itemStats.parry, i.sourceRaid, i.tomeTier, i.tomeCost, i.relicTier);
                 }
             }
             FilterEditGearView((string)EditGearJobFilterComboBox.SelectedItem, (string)EditGearSlotFilterComboBox.SelectedItem);
@@ -3899,7 +3909,7 @@ namespace FFXIV.GearTracking.WinForms
         private void EditConfigResetButton_Click(object sender, EventArgs e)
         {
             EditVITPerSTR.Value = (decimal)Common.VitPerSTR;
-            EditHighestTurn.Value = (decimal)Common.HighestTurn;
+            EditHighestTurn.Value = (decimal)Common.HighestRaid;
 
             EditDamageFormTextBox.Text = Common.DamageFormula;
             EditDamageFormTextBox_Validated(sender, e);
@@ -3922,7 +3932,7 @@ namespace FFXIV.GearTracking.WinForms
             Common.SpdReductionFormula = EditSpeedFormTextBox.Text;
 
             Common.VitPerSTR = (double)EditVITPerSTR.Value;
-            Common.HighestTurn = (int)EditHighestTurn.Value;
+            Common.HighestRaid = (double)EditHighestTurn.Value;
 
             if (activeChar != null)
             {
@@ -3959,6 +3969,7 @@ namespace FFXIV.GearTracking.WinForms
         {
             Common.VitPerSTR = Common.DefaultVitPerSTR;
             Common.HighestTurn = Common.DefaultHighestTurn;
+            Common.HighestRaid = Common.DefaultHighestRaid;
 
             Common.DamageFormula = Common.DefaultDamageFormula;
             Common.AutoAttackDamageFormula = Common.DefaultAutoAttackDamageFormula;

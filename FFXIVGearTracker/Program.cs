@@ -187,6 +187,7 @@ namespace FFXIV.GearTracking.WinForms
             c.accuracyNeeds = oldC.accuracyNeeds;
             c.charName = oldC.charName;
             c.clearedTurn = oldC.clearedTurn;
+            c.clearedRaid = 2.0 + c.clearedTurn / 100.0;
             c.currentJob = (Job)(int)oldC.currentJob;
             c.relicTier = oldC.relicTier;
             c.tomeTier = oldC.tomeTier;
@@ -285,6 +286,7 @@ namespace FFXIV.GearTracking.WinForms
             newItem.name = oldItem.name;
             newItem.relicTier = oldItem.relicTier;
             newItem.sourceTurn = oldItem.sourceTurn;
+            newItem.sourceRaid = 2.0 + oldItem.sourceTurn / 100.0;
             newItem.tomeCost = oldItem.tomeCost;
             newItem.tomeTier = oldItem.tomeTier;
             newItem.twoHand = oldItem.twoHand;

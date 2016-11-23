@@ -29,6 +29,7 @@ namespace FFXIV.GearTracking.Simulation
 			double baseDmgNoIgnore, wDmgNoIgnore, statDmgNoIgnore, critDmgNoIgnore, dtrDmgNoIgnore, spdNormDmgNoIgnore, spdDiffDmgNoIgnore, spdMinStatDmgNoIgnore, spdMinDmgNoIgnore, spdMinNormDmgNoIgnore;
 			int spdNorm = 0, spdDiff = 0, spdMin = 0, spdMinNorm = 0, baseGCDs, spdNormGCDs, spdDiffGCDs, spdMinNormGCDs, spdMinGCDs;
             int spdNormNoIgnore = 0, spdDiffNoIgnore = 0, spdMinNoIgnore = 0, spdMinNormNoIgnore = 0, baseGCDsNoIgnore, spdNormGCDsNoIgnore, spdDiffGCDsNoIgnore, spdMinNormGCDsNoIgnore, spdMinGCDsNoIgnore;
+            int step = 0;
 
 			double avgAutoDelay = 0.0;
 			int weaponCount = 0;
@@ -51,25 +52,48 @@ namespace FFXIV.GearTracking.Simulation
             dtrDmg = RunSimOnce(stats + new Statistics(0, 0, 0, 0, 1, 0, 0, 0), true);
             do
             {
-                spdMinNorm++;
+                spdMinNorm += ++step;
                 spdMinNormDmg = RunSimOnce(stats - new Statistics(0, 0, 0, 0, 0, 0, spdMinNorm, 0), out spdMinNormGCDs, true);
-            } while (spdMinNormGCDs >= baseGCDs || spdMinNormDmg >= baseDmg);
+                if (!(spdMinNormGCDs >= baseGCDs || spdMinNormDmg >= baseDmg) && step > 1)
+                {
+                    spdMinNorm -= step;
+                    step = 0;
+                }
+            } while ((spdMinNormGCDs >= baseGCDs || spdMinNormDmg >= baseDmg) || step == 0);
+            step = 0;
             do
             {
-                spdMin++;
+                spdMin += ++step;
                 spdMinDmg = RunSimOnce(stats - new Statistics(0, 0, 0, 0, 0, 0, spdMinNorm + spdMin, 0), out spdMinGCDs, true);
-            } while (spdMinGCDs >= spdMinNormGCDs || spdMinDmg >= spdMinNormDmg);
+                if (!(spdMinNormGCDs >= baseGCDs || spdMinNormDmg >= baseDmg) && step > 1)
+                {
+                    spdMin -= step;
+                    step = 0;
+                }
+            } while ((spdMinGCDs >= spdMinNormGCDs || spdMinDmg >= spdMinNormDmg) || step == 0);
             spdMinStatDmg = RunSimOnce(stats + new Statistics(0, 0, 1, 0, 0, 0, -1 * (spdMinNorm + spdMin), 0), true);
+            step = 0;
             do
             {
-                spdNorm++;
+                spdNorm += ++step;
                 spdNormDmg = RunSimOnce(stats + new Statistics(0, 0, 0, 0, 0, 0, spdNorm, 0), out spdNormGCDs, true);
-            } while (spdNormGCDs <= baseGCDs || spdNormDmg <= baseDmg);
+                if (!(spdMinNormGCDs >= baseGCDs || spdMinNormDmg >= baseDmg) && step > 1)
+                {
+                    spdNorm -= step;
+                    step = 0;
+                }
+            } while ((spdNormGCDs <= baseGCDs || spdNormDmg <= baseDmg) || step == 0);
+            step = 0;
             do
             {
-                spdDiff++;
+                spdDiff += ++step;
                 spdDiffDmg = RunSimOnce(stats + new Statistics(0, 0, 0, 0, 0, 0, spdDiff + spdNorm, 0), out spdDiffGCDs, true);
-            } while (spdDiffGCDs <= spdNormGCDs || spdDiffDmg <= spdNormDmg);
+                if (!(spdMinNormGCDs >= baseGCDs || spdMinNormDmg >= baseDmg) && step > 1)
+                {
+                    spdDiff -= step;
+                    step = 0;
+                }
+            } while ((spdDiffGCDs <= spdNormGCDs || spdDiffDmg <= spdNormDmg) || step == 0);
 
 			baseDmgNoIgnore = RunSimOnce(stats, out baseGCDsNoIgnore, false);
 			wDmgNoIgnore = RunSimOnce(stats + new Statistics(0, 1, 0, 0, 0, 0, 0, 0), false);
@@ -152,7 +176,12 @@ namespace FFXIV.GearTracking.Simulation
             return SetValue(compareSet) - SetValue(startSet);
         }
 		
-		protected abstract double RunSimOnce(Statistics stats, out int GCDCount, bool ignoreResources = false);
+		protected abstract double RunSimOnce(Statistics stats, out int GCDCount, out double simTime, bool ignoreResources = false);
+        protected double RunSimOnce(Statistics stats, out int GCDCount, bool ignoreResources = false)
+        {
+            double time = 0;
+            return RunSimOnce(stats, out GCDCount, out time, ignoreResources);
+        }
 
 		protected virtual void ResetCachedValues()
 		{
@@ -165,15 +194,15 @@ namespace FFXIV.GearTracking.Simulation
 			{
 				spdReduction = Core.Common.CalculateSpdReduction(speed);
 			}
-			return (double)Math.Round(2.5 - spdReduction, 3);
+			return (double)Math.Round(2.51 - spdReduction, 3);
 		}
 		protected virtual double CastSpeed(double castTime, int speed, bool round = true)
 		{
-			if (spdReduction < 0)
-			{
+			//if (spdReduction < 0)
+			//{
 				spdReduction = Core.Common.CalculateSpdReduction(speed);
-			}
-			return (round ? (double)Math.Round(castTime - spdReduction, 3) : castTime - spdReduction);
+			//}
+            return (round ? (double)Math.Round(castTime + 0.01 - spdReduction, 3) : castTime + 0.01 - spdReduction);
 		}
 		protected double GetNextServerTick(double time)
 		{

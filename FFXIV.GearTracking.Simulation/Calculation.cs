@@ -27,8 +27,12 @@ namespace FFXIV.GearTracking.Simulation
                         sim = new BRDSimulation();
                         gearWeights = sim.RunSimulation(totalStats);
                         break;
-                    case Job.Summoner:
+                    /*case Job.Summoner:
                         sim = new SMNSimulation();
+                        gearWeights = sim.RunSimulation(totalStats);
+                        break;*/
+                    case Job.Dragoon:
+                        sim = new DRGSimulation();
                         gearWeights = sim.RunSimulation(totalStats);
                         break;
                     default:
@@ -71,7 +75,7 @@ namespace FFXIV.GearTracking.Simulation
             }
 
             StatWeights gearWeights = new StatWeights((wdmDmgVal - baseDmgVal) / statDiff, 1, (detDmgVal - baseDmgVal) / statDiff, (critDmgVal - baseDmgVal) / statDiff, 0);
-            gearWeights.spdWeight = (j == Job.BlackMage ? (gearWeights.dtrWeight + 3 * gearWeights.critWeight) : Math.Min(gearWeights.critWeight, gearWeights.dtrWeight)) * 0.25;
+            gearWeights.spdWeight = (j == Job.BlackMage ? (gearWeights.dtrWeight + 3 * gearWeights.critWeight) : Math.Min(gearWeights.critWeight, gearWeights.dtrWeight)) * 0.5;
 
             if (j == Job.Scholar)
             {
