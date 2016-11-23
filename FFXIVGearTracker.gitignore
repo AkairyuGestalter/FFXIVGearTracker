@@ -1,3 +1,5 @@
 *.pdb
 *.vshost.*
 *.suo
+*\obj
+*\bin
