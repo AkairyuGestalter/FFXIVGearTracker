@@ -1,0 +1,6 @@
+C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.Common\obj\Debug\FFXIV.GearTracking.Common.csprojResolveAssemblyReference.cache
+C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.Common\bin\Debug\FFXIV.GearTracking.Common.dll
+C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.Common\bin\Debug\FFXIV.GearTracking.Common.pdb
+C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.Common\bin\Debug\NCalc.dll
+C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.Common\obj\Debug\FFXIV.GearTracking.Common.dll
+C:\Users\Travis\Documents\GitHub\FFXIVGearTracker\FFXIV.GearTracking.Common\obj\Debug\FFXIV.GearTracking.Common.pdb

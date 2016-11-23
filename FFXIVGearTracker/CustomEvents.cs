@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace FFXIVGearTracker
+using FFXIV.GearTracking.Core;
+
+namespace FFXIV.GearTracking.WinForms
 {
 	#region Delegate Only
 	public delegate void ActivateCalcButtons(bool active);
@@ -19,7 +21,7 @@ namespace FFXIVGearTracker
 	#region Event Delegates
 	public delegate void PopOutFormClosing();
 	public delegate void PopOutSlotFilterChanged(string slot);
-	public delegate void PopOutHighestTurnFilterChanged(int highTurn);
+	public delegate void PopOutHighestTurnFilterChanged(double highRaid);
 	public delegate void PopOutChangeCharacter(Character c);
 	public delegate void PopOutUpdateCharacter(Character c);
 
@@ -65,11 +67,11 @@ namespace FFXIVGearTracker
 			}
 		}
 
-		public static void ChangeHighestTurnFilter(int highTurn)
+		public static void ChangeHighestTurnFilter(double highRaid)
 		{
 			if (HighestTurnFilterChangedEvent != null)
 			{
-				HighestTurnFilterChangedEvent(highTurn);
+				HighestTurnFilterChangedEvent(highRaid);
 			}
 		}
 

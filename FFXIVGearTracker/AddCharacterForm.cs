@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace FFXIVGearTracker
+namespace FFXIV.GearTracking.WinForms
 {
 	public partial class AddCharacterForm : System.Windows.Forms.Form
 	{

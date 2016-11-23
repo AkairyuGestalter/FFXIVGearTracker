@@ -1,0 +1,80 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Core="clr-namespace:FFXIV.GearTracking.Core;assembly=FFXIV.GearTracking.Core"
+        xmlns:local="clr-namespace:FFXIV.GearTracking.WPF"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+        x:Class="FFXIV.GearTracking.WPF.MainWindow"
+        Title="MainWindow" Height="547" Width="954"
+        Closing="Window_Closing"
+    >
+    <Window.Resources>
+        <CollectionViewSource x:Key="GearListView" Source="{Binding GearList}" Filter="GearListView_Filter">
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="EquipSlot"/>
+            </CollectionViewSource.GroupDescriptions>
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="EquipSlot"/>
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+        <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="JobsEnum">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="Core:Job"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </Window.Resources>
+    <Window.DataContext>
+        <Core:Common/>
+    </Window.DataContext>
+    <DockPanel x:Name="MainPanel" HorizontalAlignment="Stretch" Margin="10,10,10,10" VerticalAlignment="Top" >
+        <TabControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0,0,0,10" DockPanel.Dock="Top">
+            <TabItem Header="TabItem">
+                <DockPanel HorizontalAlignment="Stretch" Margin="0,0,0,10" VerticalAlignment="Stretch" LastChildFill="False">
+                    <GroupBox x:Name="ItemsGroupBox" Margin="0" Header="Gear List" VerticalAlignment="Stretch" HorizontalAlignment="Right" DockPanel.Dock="Right">
+                        <DataGrid x:Name="ItemsGrid" HorizontalAlignment="Stretch" Margin="5,5,5,5" AutoGenerateColumns="False" ItemsSource="{Binding Source={StaticResource ResourceKey=GearListView}}" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" HeadersVisibility="Column">
+                            <DataGrid.Columns>
+                                <DataGridCheckBoxColumn IsReadOnly="False" Header="Own?" Binding="{Binding Owned}"/>
+                                <DataGridTextColumn IsReadOnly="True" Header="Item" Binding="{Binding Name}"/>
+                                <DataGridTextColumn IsReadOnly="True" Header="Turn" Binding="{Binding SourceTurn}"/>
+                                <DataGridTextColumn IsReadOnly="True" Header="Slot" Binding="{Binding EquipSlot}"/>
+                                <DataGridTextColumn IsReadOnly="True" Header="WD" Binding="{Binding ItemStats.WeaponDamage}"/>
+                                <DataGridTextColumn IsReadOnly="True" Header="Stat" Binding="{Binding ItemStats.MainStat}"/>
+                                <DataGridTextColumn IsReadOnly="True" Header="VIT" Binding="{Binding ItemStats.Vitality}"/>
+                                <DataGridTextColumn IsReadOnly="True" Header="PIE" Binding="{Binding ItemStats.Piety}"/>
+                                <DataGridTextColumn IsReadOnly="True" Header="Acc" Binding="{Binding ItemStats.Accuracy}"/>
+                                <DataGridTextColumn IsReadOnly="True" Header="DET" Binding="{Binding ItemStats.Determination}"/>
+                                <DataGridTextColumn IsReadOnly="True" Header="Crit" Binding="{Binding ItemStats.CritRate}"/>
+                                <DataGridTextColumn IsReadOnly="True" Header="Spd" Binding="{Binding ItemStats.Speed}"/>
+                                <DataGridTextColumn IsReadOnly="True" Header="Parry" Binding="{Binding ItemStats.Parry}"/>
+                                <DataGridTextColumn IsReadOnly="True" Header="Value" Binding="{Binding Value, StringFormat={}{0:n3}}" />
+                                <DataGridTemplateColumn Header="Jobs">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ComboBox Name="Jobs" ItemsSource="{Binding EquipList}" Text="{Binding EquipString,Mode=OneWay}">
+                                                <ComboBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <CheckBox Content="{Binding JobName}" IsChecked="{Binding CanEquip}" Checked="CheckBox_Checked"/>
+                                                    </DataTemplate>
+                                                </ComboBox.ItemTemplate>
+                                            </ComboBox>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </GroupBox>
+                    <GroupBox Header="Character Setup" HorizontalAlignment="Stretch" Margin="0,0,0,0" Height="59" DockPanel.Dock="Top">
+                        <Grid Margin="0" >
+                            <ComboBox x:Name="CharacterSelect" HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="117" ItemsSource="{Binding CharacterList}" SelectedItem="{Binding ActiveCharacter}"/>
+                            <ComboBox x:Name="JobSelect" Height="25" VerticalAlignment="Top" Margin="122,0,0,0" ItemsSource="{Binding Source={StaticResource JobsEnum}}" SelectedItem="{Binding ActiveCharacter.CurrentJob}" SelectionChanged="JobSelect_SelectionChanged"/>
+                        </Grid>
+                    </GroupBox>
+                </DockPanel>
+            </TabItem>
+            <TabItem Header="TabItem">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</Window>

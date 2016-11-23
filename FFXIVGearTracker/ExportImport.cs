@@ -7,7 +7,9 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Reflection;
 using System.IO;
 
-namespace FFXIVGearTracker
+using FFXIV.GearTracking.Core;
+
+namespace FFXIV.GearTracking.WinForms
 {
 	public class ExportImport
 	{
