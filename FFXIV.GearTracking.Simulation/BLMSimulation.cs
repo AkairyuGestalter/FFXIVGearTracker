@@ -2205,6 +2205,453 @@ namespace FFXIV.GearTracking.Simulation
             simTime = totalTime / SimIterations;
             return totalDmg / totalTime;
         }
+        protected double RunNewEventSimOnce(Statistics stats)
+        {
+            int GCDCount;
+            double simTime;
+            return RunNewEventSimOnce(stats, out GCDCount, out simTime, false);
+        }
+        protected double RunNewEventSimOnce(Statistics stats, out int GCDCount, out double simTime, bool ignoreResources = false)
+        {
+            ResetCachedValues();
+            double totalDmg = 0.0;
+            double totalTime = 0.0;
+            GCDCount = 0;
+            int failCount = 0;
+            stats.mainStat = (int)(stats.mainStat * 1.03);
+
+            for (int i = 0; i < SimIterations + failCount; i++)
+            {
+                RNG = new Random(i);
+
+                BuffType mode = BuffType.None;
+                bool nextSpell = false;
+                int maxMP = (int)Math.Round((int)(stats.pie * 1.03) * 6.74 + 9580, 0); // SCH in party for sake of argument
+                int MP = maxMP;
+                double leyLinesBuffEnd = 0.0;
+                double leyLinesRecastEnd = 0.0;
+                double sharpCastBuffEnd = 0.0;
+                double sharpCastRecastEnd = 0.0;
+                double enochianBuffEnd = 0.0;
+                double enochianRecastEnd = 0.0;
+                int enochianRefreshes = 0;
+                double ThunderDoTEnd = 0.0;
+                double ThunderCloudBuffEnd = 0.0;
+                double FireStarterBuffEnd = 0.0;
+                double thunderDmgMod = 1.0;
+                double swiftRecastEnd = 0.0;
+                double swiftBuffEnd = 0.0;
+                double ragingRecastEnd = 0.0;
+                double ragingBuffEnd = 0.0;
+                int ragingCount = 0;
+                int fire4count = 0;
+                double modeBuffEnd = 0.0;
+                double convertRecastEnd = 0.0;
+                double transposeRecastEnd = 0.0;
+                bool regenThunder = false;
+                bool regenBlizzard = false;
+                double spelldamage = 0.0;
+                bool sharpcastThunder = false;
+
+                bool failRun = false;
+                double currentTime = 0.0;
+                double currentDmg = 0.0;
+                double GCD = 0.0;
+                int tempGCDCount = 0;
+                double animationDelayEnd = 0.0;
+                double animationDelayMax = 0.5;
+                double castComplete = 0.0;
+                double nextTick = (double)RNG.Next(3001) / 1000.0;
+                SpellType castingSpell = SpellType.None;
+                SpellType lastSpell = SpellType.None;
+                SpellType prevSpell = SpellType.None;
+
+                SortedList<double, List<SimEvents>> eventDict = new SortedList<double, List<SimEvents>>();
+                AddEvent(ref eventDict, nextTick, new SimEvents(SimEventType.ServerTick, "Server Tick"));
+                int eventIndex = 0;
+                do
+                {
+                    // Select next action if we can
+                    if (castingSpell == SpellType.None && GCD <= currentTime && animationDelayEnd <= currentTime) // If we're done casting and the GCD is over, pick an action
+                    {
+                        if (enochianBuffEnd <= currentTime && enochianRecastEnd <= currentTime || (mode == BuffType.UI3 && enochianRefreshes == 2)) // get enochian going again
+                        {
+                            if (mode == BuffType.None) // start from scratch
+                            {
+                                if (currentTime >= 10.0)
+                                {
+                                    // Should never wind up here, so treat it as a failure and discard this run.
+                                    failCount++;
+                                    failRun = true;
+                                    break;
+                                }
+                                if (sharpCastRecastEnd <= currentTime)
+                                {
+                                    sharpCastRecastEnd = currentTime + 60.0;
+                                    sharpCastBuffEnd = currentTime + 10.0;
+                                    animationDelayEnd = currentTime + animationDelayMax;
+                                    AddEvent(ref eventDict, animationDelayEnd, new SimEvents(SimEventType.DelayEnd, "Sharpcast"));
+                                }
+                                else
+                                {
+                                    castingSpell = SpellType.Fire;
+                                    castComplete = Math.Round(currentTime + CastSpeed(stats.speed, castingSpell, mode, leyLinesBuffEnd > currentTime), 3);
+                                    GCD = currentTime + GCDSpeed(stats.speed, leyLinesBuffEnd > currentTime);
+                                    AddEvent(ref eventDict, GCD, new SimEvents(SimEventType.GCDEnd, "Fire"));
+                                    AddEvent(ref eventDict, castComplete, new SimEvents(SimEventType.CastEnd, "Fire"));
+                                }
+                            }
+                            else if (mode == BuffType.AF)
+                            {
+                                if (enochianRecastEnd <= currentTime)
+                                {
+                                    enochianRefreshes = 0;
+                                    enochianBuffEnd = currentTime + 30.0;
+                                    enochianRecastEnd = currentTime + 60.0;
+                                    animationDelayEnd = currentTime + animationDelayMax;
+                                    AddEvent(ref eventDict, animationDelayEnd, new SimEvents(SimEventType.DelayEnd, "Enochian"));
+                                }
+                            }
+                            else if (mode == BuffType.UI3)
+                            {
+                                /* Enochian Reset Umbral Phase logic/priorities:
+                                 * 
+                                 * Thunder 1 if enough MP (Replace with ThunderCloud if it's up)
+                                 * Blizzard 1 if not enough MP for Thunder
+                                 * Make sure MP will be full before the next two actions:
+                                 * SharpCast <- highest priority, the sooner we get back to F4s, the better
+                                 * Fire 3 (MP should be full when it lands) < highest priority after Sharpcast
+                                 * Use Enochian during the fast UI3 Fire 3 -> GCD finish hang time
+                                 */
+                                if (ThunderCloudBuffEnd > currentTime && !regenThunder)
+                                { // Use ThunderCloud instead of T1 if available, but don't re-use during this UI3 phase.
+
+                                }
+                                else if (MP + MPTicAmt(maxMP, mode) >= maxMP && nextTick < currentTime + animationDelayMax + CastSpeed(stats.speed, SpellType.Fire3, mode, leyLinesBuffEnd > currentTime + animationDelayMax))
+                                { // Sharpcast if MP will be full by the time Sharp -> F3 completes.
+
+                                }
+                                else if (sharpCastBuffEnd > currentTime)
+                                { // Fire 3 once Sharpcast is on.
+
+                                }
+                                else if (!regenThunder && MP > MPCost(SpellType.Thunder, mode))
+                                {
+
+                                }
+                                else if (!regenBlizzard && MP > MPCost(SpellType.Blizzard, mode)) 
+                                { // Use Blizzard if we don't have enough MP for Thunder 1 
+                                
+                                }
+                                else 
+                                { // Shouldn't end up here, but leaving this for breakpointing for debugging purposes.
+                                }
+                            }
+                            else if (mode == BuffType.AF3 && enochianRecastEnd <= currentTime)
+                            {
+                                // Use Enochian during the fast UI3 Fire 3 -> GCD finish hang time
+                                enochianRefreshes = 0;
+                                enochianBuffEnd = currentTime + 30.0;
+                                enochianRecastEnd = currentTime + 60.0;
+                                animationDelayEnd = currentTime + animationDelayMax;
+                                AddEvent(ref eventDict, animationDelayEnd, new SimEvents(SimEventType.DelayEnd, "Enochian"));
+                            }
+                        }
+                        else if (enochianBuffEnd > currentTime) //enochian is running with enough time to refresh
+                        {
+                            if (mode == BuffType.AF)
+                            {
+                                if (FireStarterBuffEnd > currentTime)
+                                {
+                                    spelldamage = SpellDamage(SpellType.Fire3, stats, mode, (ragingBuffEnd > currentTime ? 1.2 : 1.0) * (enochianBuffEnd > currentTime ? 1.05 : 1.0));
+                                    currentDmg += spelldamage;
+                                    nextSpell = false;
+                                    FireStarterBuffEnd = 0;
+                                    castingSpell = SpellType.None;
+                                    prevSpell = lastSpell;
+                                    lastSpell = SpellType.Fire3;
+                                    tempGCDCount++;
+                                    GCD = currentTime + GCDSpeed(stats.speed, leyLinesBuffEnd > currentTime);
+                                    animationDelayEnd = currentTime + animationDelayMax;
+                                    modeBuffEnd = currentTime + 12.0;
+                                    mode = BuffType.AF3;
+                                    AddEvent(ref eventDict, GCD, new SimEvents(SimEventType.GCDEnd, "F3 Starter"));
+                                    AddEvent(ref eventDict, animationDelayEnd, new SimEvents(SimEventType.DelayEnd, "F3 Starter"));
+                                }
+                                else
+                                {
+                                    // Should never wind up here, so treat it as a failure and discard this run.
+                                    failCount++;
+                                    failRun = true;
+                                    break;
+                                }
+                            }
+                            else if (mode == BuffType.UI3)
+                            {
+                                /* Enochian Refresh Umbral Ice Phase logic/priorities:
+                                 * 
+                                 * For all following actions, make sure using it won't cause enochian to fall off (cast times of spell+B4 < remaining enochian duration)
+                                 * ThunderCloud if it's up
+                                 * B4 if enough MP
+                                 * F3 if MP will be full by the time it finishes
+                                 * Thunder 1 if enough MP but not enough for B4
+                                 * Blizzard 1 if not enough MP for Thunder 1
+                                 * Wait if we've done Thunder/B1 and B4 and will still finish F3 before MP is full
+                                 */
+                                if (ThunderCloudBuffEnd > currentTime && !regenThunder && GCDSpeed(stats.speed, leyLinesBuffEnd > currentTime) + CastSpeed(stats.speed, SpellType.Blizzard4, mode, leyLinesBuffEnd > currentTime + GCDSpeed(stats.speed, leyLinesBuffEnd > currentTime)) < enochianBuffEnd - currentTime)
+                                {
+ 
+                                }
+                                else if (MP > MPCost(SpellType.Blizzard4) && enochianBuffEnd - currentTime < 16)
+                                { // Blizzard 4 if we haven't done so yet and we have enough MP
+
+                                }
+                                else if (MP > MPCost(SpellType.Fire3, mode) && (MP == maxMP || (maxMP - MP <= MPTicAmt(maxMP, mode) && currentTime + CastSpeed(stats.speed, SpellType.Fire3, mode, leyLinesBuffEnd > currentTime) > nextTick)))
+                                { // if enough MP for Fire 3, and we're either already full or will fill before the Fire 3 can finish.
+
+                                }
+                                else if (MP > MPCost(SpellType.Thunder) && !regenThunder)
+                                {
+
+                                }
+                                else if (MP > MPCost(SpellType.Blizzard, mode) && !regenBlizzard)
+                                {
+
+                                }
+                                else
+                                { // How to prevent this from getting added a bunch? Does it matter?
+                                    AddEvent(ref eventDict, nextTick - CastSpeed(stats.speed, SpellType.Fire3, mode, leyLinesBuffEnd > nextTick) + 0.001, new SimEvents(SimEventType.TimeCheck, "MP Wait"));
+                                }
+                            }
+                            else if (mode == BuffType.AF3)
+                            {
+                                
+                            }
+                        }
+                    }
+                    // Off-GCD actions while not actively casting a spell
+                    if (castingSpell == SpellType.None && animationDelayEnd <= currentTime)
+                    {
+                        if (enochianBuffEnd > currentTime && ragingBuffEnd > currentTime && leyLinesRecastEnd <= currentTime)
+                        {
+                            leyLinesRecastEnd = currentTime + 90.0;
+                            leyLinesBuffEnd = currentTime + 30.0;
+                            animationDelayEnd = currentTime + animationDelayMax;
+                            AddEvent(ref eventDict, animationDelayEnd, new SimEvents(SimEventType.DelayEnd, "Ley Lines"));
+                        }
+                        if (enochianBuffEnd > currentTime && ragingBuffEnd > currentTime && (lastSpell == SpellType.Fire3 || lastSpell == SpellType.Flare) && convertRecastEnd <= currentTime && MP + (int)(maxMP * 0.3) < maxMP)
+                        {
+                            convertRecastEnd = currentTime + 180;
+                            MP += (int)(maxMP * 0.3);
+                            animationDelayEnd = currentTime + animationDelayMax;
+                            AddEvent(ref eventDict, animationDelayEnd, new SimEvents(SimEventType.DelayEnd, "Convert"));
+                        }
+                        else if (enochianBuffEnd <= currentTime && enochianRecastEnd <= currentTime && ((mode == BuffType.UI3 && lastSpell == SpellType.Thunder3) || mode == BuffType.AF3))
+                        {
+                            enochianRefreshes = 0;
+                            enochianBuffEnd = currentTime + 30.0 - enochianRefreshes * 5.0;
+                            enochianRecastEnd = currentTime + 60.0;
+                            animationDelayEnd = currentTime + animationDelayMax;
+                            AddEvent(ref eventDict, animationDelayEnd, new SimEvents(SimEventType.DelayEnd, "Enochian"));
+                        }
+                        else if (MP == maxMP && FireStarterBuffEnd > currentTime && mode.ToString().Contains("UI") && (enochianBuffEnd > currentTime + 16.5 || enochianRecastEnd <= currentTime))
+                        { // Transpose out of UI3 before tossing a firestarter
+                            transposeRecastEnd = currentTime + 12.0;
+                            mode = BuffType.AF;
+                            modeBuffEnd = currentTime + 12.0;
+                            animationDelayEnd = currentTime + animationDelayMax;
+                            AddEvent(ref eventDict, animationDelayEnd, new SimEvents(SimEventType.DelayEnd, "Transpose"));
+                        }
+                        else if ((enochianBuffEnd <= currentTime && enochianRecastEnd > currentTime) && mode == BuffType.AF3 && MP > MPCost(SpellType.Fire, mode) && lastSpell == SpellType.Fire3 && GCD > currentTime + animationDelayMax && swiftRecastEnd <= currentTime && convertRecastEnd > currentTime + 60 && FireStarterBuffEnd <= currentTime)
+                        {
+                            swiftBuffEnd = currentTime + 10.0;
+                            swiftRecastEnd = currentTime + 60.0;
+                            animationDelayEnd = currentTime + animationDelayMax;
+                            AddEvent(ref eventDict, animationDelayEnd, new SimEvents(SimEventType.DelayEnd, "Swiftcast"));
+                        }
+                        else if (mode == BuffType.AF3 && MP < MPCost(SpellType.Blizzard3, BuffType.AF3))
+                        {
+                            // if we're out of MP, convert if we have it, otherwise transpose
+                            if (convertRecastEnd <= currentTime && ragingRecastEnd > currentTime)
+                            {
+                                convertRecastEnd = currentTime + 180;
+                                MP = (int)(maxMP * 0.3);
+                                animationDelayEnd = currentTime + animationDelayMax;
+                                AddEvent(ref eventDict, animationDelayEnd, new SimEvents(SimEventType.DelayEnd, "Convert"));
+                            }
+                            else if (transposeRecastEnd <= currentTime && FireStarterBuffEnd <= currentTime)
+                            {
+                                transposeRecastEnd = currentTime + 12.0;
+                                mode = BuffType.UI;
+                                modeBuffEnd = currentTime + 12.0;
+                                animationDelayEnd = currentTime + animationDelayMax;
+                                regenThunder = false;
+                                regenBlizzard = false;
+                                AddEvent(ref eventDict, animationDelayEnd, new SimEvents(SimEventType.DelayEnd, "Transpose"));
+                            }
+                        }
+                    }
+
+                    if (eventDict.Keys.Count > 0)
+                    {
+                        // Process next event(s)
+                        currentTime = eventDict.Keys[eventIndex];
+                        List<SimEvents> nextEvents = eventDict.Values[eventIndex++];
+
+                        if (modeBuffEnd <= currentTime && mode != BuffType.None)
+                        {
+                            mode = BuffType.None;
+                            if (castingSpell == SpellType.Blizzard4 || castingSpell == SpellType.Fire4)
+                            {
+                                castComplete = 0;
+                                castingSpell = SpellType.None;
+                            }
+                        }
+
+                        foreach (SimEvents nextEvent in nextEvents)
+                        {
+                            if (nextEvent.EventType == SimEventType.ServerTick)
+                            {
+                                if (ThunderDoTEnd > currentTime)
+                                {
+                                    spelldamage = SpellDamage(SpellType.ThunderDoT, stats, mode, thunderDmgMod);
+                                    currentDmg += spelldamage;
+                                    if (RNG.Next(100) < 10 || sharpcastThunder)
+                                    {
+                                        ThunderCloudBuffEnd = currentTime + 12.0;// = true;
+                                        sharpcastThunder = false;
+                                    }
+                                }
+                                /* MP recovery */
+                                MP = (int)Math.Min(MP + MPTicAmt(maxMP, mode), maxMP);
+                                nextTick = GetNextServerTick(nextTick);
+                                AddEvent(ref eventDict, nextTick, new SimEvents(SimEventType.ServerTick, "Server Tick"));
+                            }
+
+                            if (nextEvent.EventType == SimEventType.CastEnd) // If we just finished casting a spell, process the damage.
+                            {
+                                spelldamage = SpellDamage(castingSpell, stats, mode, (ragingBuffEnd > currentTime ? 1.2 : 1.0) * (enochianBuffEnd > currentTime ? 1.05 : 1.0));
+                                currentDmg += spelldamage;
+                                if (castingSpell == SpellType.Flare)
+                                {
+                                    MP = 0;
+                                    mode = BuffType.AF3;
+                                    modeBuffEnd = currentTime + 12.0;
+                                }
+                                else
+                                {
+                                    MP -= MPCost(castingSpell, mode);
+                                }
+                                if (FireStarterBuffEnd > currentTime)
+                                {
+                                    nextSpell = true;
+                                }
+                                if (castingSpell == SpellType.Fire3)
+                                {
+                                    mode = BuffType.AF3;
+                                    modeBuffEnd = currentTime + 12.0;
+                                }
+                                else if (castingSpell == SpellType.Blizzard3)
+                                {
+                                    mode = BuffType.UI3;
+                                    regenThunder = false;
+                                    regenBlizzard = false;
+                                    modeBuffEnd = currentTime + 12.0;
+                                }
+                                else if (castingSpell == SpellType.Blizzard4)
+                                {
+                                    enochianBuffEnd = currentTime + 30.0 - ++enochianRefreshes * 5.0;
+                                }
+                                else if (castingSpell == SpellType.Blizzard)
+                                {
+                                    if (mode == BuffType.UI3 || mode == BuffType.UI2 || mode == BuffType.UI)
+                                    {
+                                        regenBlizzard = true;
+                                        modeBuffEnd = currentTime + 12.0;
+                                        if (mode == BuffType.UI2)
+                                        {
+                                            mode = BuffType.UI3;
+                                        }
+                                        else if (mode == BuffType.UI)
+                                        {
+                                            mode = BuffType.UI2;
+                                        }
+                                    }
+                                    else if (mode == BuffType.None)
+                                    {
+                                        mode = BuffType.UI;
+                                        modeBuffEnd = currentTime + 12.0;
+                                    }
+                                    else
+                                    {
+                                        mode = BuffType.None;
+                                    }
+                                }
+                                else if (castingSpell == SpellType.Thunder || castingSpell == SpellType.Thunder2 || castingSpell == SpellType.Thunder3)
+                                {
+                                    ThunderDoTEnd = currentTime + 18 + (castingSpell == SpellType.Thunder2 ? 3 : (castingSpell == SpellType.Thunder3 ? 6 : 0));
+                                    thunderDmgMod = (ragingBuffEnd > currentTime ? 1.2 : 1.0) * (enochianBuffEnd > currentTime ? 1.05 : 1.0);
+                                    if (mode == BuffType.UI3 || mode == BuffType.UI2 || mode == BuffType.UI)
+                                    {
+                                        regenThunder = true;
+                                    }
+                                    if (sharpCastBuffEnd > currentTime)
+                                    {
+                                        sharpcastThunder = true;
+                                        sharpCastBuffEnd = 0;
+                                    }
+                                }
+                                else if (castingSpell == SpellType.Fire)
+                                {
+                                    if (RNG.Next(10) < 4 || sharpCastBuffEnd > currentTime)
+                                    {
+                                        FireStarterBuffEnd = currentTime + 12.0;
+                                        if (sharpCastBuffEnd > currentTime)
+                                        {
+                                            sharpCastBuffEnd = 0;
+                                        }
+                                    }
+                                    if (mode == BuffType.AF || mode == BuffType.AF2 || mode == BuffType.AF3)
+                                    {
+                                        modeBuffEnd = currentTime + 12.0;
+                                        if (mode == BuffType.AF2)
+                                        {
+                                            mode = BuffType.AF3;
+                                        }
+                                        else if (mode == BuffType.AF)
+                                        {
+                                            mode = BuffType.AF2;
+                                        }
+                                    }
+                                    else if (mode == BuffType.None)
+                                    {
+                                        mode = BuffType.AF;
+                                        modeBuffEnd = currentTime + 12.0;
+                                    }
+                                    else
+                                    {
+                                        mode = BuffType.None;
+                                    }
+                                }
+                                tempGCDCount++;
+                                prevSpell = lastSpell;
+                                lastSpell = castingSpell;
+                                castingSpell = SpellType.None;
+                            }
+                        }
+                    }
+                } while (ragingCount < SimMinutes / 3 + 1);
+                if (!failRun)
+                {
+                    totalTime += currentTime;
+                    totalDmg += currentDmg;
+                    GCDCount += tempGCDCount;
+                }
+            }
+            GCDCount /= SimIterations;
+            simTime = totalTime / SimIterations;
+            return totalDmg / totalTime;
+        }
         private string PrintDict(SortedList<double, List<SimEvents>> eventDict)
         {
             string output = "";
@@ -2216,6 +2663,14 @@ namespace FFXIV.GearTracking.Simulation
                 }
             }
             return output;
+        }
+        private int LostThunderTicks(double thunderDoTEndTime, double nextTickTime)
+        {
+            if (thunderDoTEndTime > nextTickTime)
+            {
+                return (int)(thunderDoTEndTime - nextTickTime) / 3 + 1;
+            }
+            return 0;
         }
     }
 }
