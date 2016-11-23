@@ -1,0 +1,11 @@
+*.pdb
+*.vshost.*
+*.suo
+*.user
+*.bak
+[Oo]bj/
+[Bb]in/
+Release/*.DAT
+[Dd]ebug/
+[Dd]ebugWPF/
+[Rr]eleaseWPF/
