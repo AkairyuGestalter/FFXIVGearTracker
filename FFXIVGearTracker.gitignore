@@ -1,3 +1,6 @@
 *.pdb
 *.vshost.*
 *.suo
+*.user
+[Oo]bj/
+[Bb]in/
