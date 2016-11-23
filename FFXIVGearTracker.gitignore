@@ -1,5 +1,6 @@
 *.pdb
 *.vshost.*
 *.suo
-*\obj
-*\bin
+*.user
+[Oo]bj/
+[Bb]in/
