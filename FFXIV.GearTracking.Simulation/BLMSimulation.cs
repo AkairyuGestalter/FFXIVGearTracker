@@ -929,7 +929,7 @@ namespace FFXIV.GearTracking.Simulation
         }
         public override double SetValue(GearSet set)
         {
-            return RunSimOnce(set.totalStats);
+            return RunEventSimOnce(set.totalStats);
         }
 
         public enum SpellType

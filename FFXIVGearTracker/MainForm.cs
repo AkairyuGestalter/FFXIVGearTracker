@@ -2672,6 +2672,126 @@ namespace FFXIV.GearTracking.WinForms
                 }
             }
 
+            GearSet oneSet = new GearSet();
+            oneSet.baseStats = activeChar.idealDamage[(int)j].baseStats;
+            List<GearSet> setList = new List<GearSet>();
+            int setCount = 0;
+            foreach (Item mainHand in mainHands)
+            {
+                if (maxiLevel - mainHand.itemStats.itemLevel <= 15)
+                {
+                    oneSet.mainHand = mainHand;
+                    foreach (Item head in heads)
+                    {
+                        if (maxiLevel - head.itemStats.itemLevel <= 15)
+                        {
+                            oneSet.head = head;
+                            foreach (Item body in bodies)
+                            {
+                                if (maxiLevel - body.itemStats.itemLevel <= 15)
+                                {
+                                    oneSet.body = body;
+                                    foreach (Item hand in hands)
+                                    {
+                                        if (maxiLevel - hand.itemStats.itemLevel <= 15)
+                                        {
+                                            oneSet.hands = hand;
+                                            foreach (Item waist in waists)
+                                            {
+                                                if (maxiLevel - waist.itemStats.itemLevel <= 15)
+                                                {
+                                                    oneSet.waist = waist;
+                                                    foreach (Item leg in legs)
+                                                    {
+                                                        if (maxiLevel - leg.itemStats.itemLevel <= 15)
+                                                        {
+                                                            oneSet.legs = leg;
+                                                            foreach (Item foot in feet)
+                                                            {
+                                                                if (maxiLevel - foot.itemStats.itemLevel <= 15)
+                                                                {
+                                                                    oneSet.feet = foot;
+                                                                    foreach (Item neck in necks)
+                                                                    {
+                                                                        if (maxiLevel - neck.itemStats.itemLevel <= 15)
+                                                                        {
+                                                                            oneSet.neck = neck;
+                                                                            foreach (Item ear in ears)
+                                                                            {
+                                                                                if (maxiLevel - ear.itemStats.itemLevel <= 15)
+                                                                                {
+                                                                                    oneSet.ears = ear;
+                                                                                    foreach (Item wrist in wrists)
+                                                                                    {
+                                                                                        if (maxiLevel - wrist.itemStats.itemLevel <= 15)
+                                                                                        {
+                                                                                            oneSet.wrists = wrist;
+                                                                                            for (int lringindex = 0; lringindex < rings.Count; lringindex++)
+                                                                                            {
+                                                                                                if (maxiLevel - rings[lringindex].itemStats.itemLevel <= 15)
+                                                                                                {
+                                                                                                    for (int rringindex = (rings[lringindex].unique ? lringindex + 1 : lringindex); rringindex < rings.Count; rringindex++)
+                                                                                                    {
+                                                                                                        if (maxiLevel - rings[rringindex].itemStats.itemLevel <= 15)
+                                                                                                        {
+                                                                                                            oneSet.leftRing = rings[lringindex];
+                                                                                                            oneSet.rightRing = rings[rringindex];
+                                                                                                            oneSet.CalcGearStats();
+                                                                                                            oneSet.CalcTotalStats();
+                                                                                                            setList.Add(oneSet.Clone());
+                                                                                                            setCount++;
+                                                                                                        }
+                                                                                                    }
+                                                                                                }
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            //int blockSize = Environment.ProcessorCount - 5;
+            List<TimeSpan> timeEstimates = new List<TimeSpan>();
+            for (int blockSize = 1; blockSize < Environment.ProcessorCount; blockSize++)
+            {
+                //for (int blockIndex = 0; blockIndex * blockSize < setCount; blockIndex++)
+                //{
+                int blockIndex = 0;
+                DateTime blockStart = DateTime.Now;
+                List<Thread> blockThreads = new List<Thread>();
+                for (int setIndex = 0; setIndex < blockSize; setIndex++)
+                {
+                    int listindex = blockIndex * blockSize + setIndex;
+                    if (listindex < setCount)
+                    {
+                        Thread indexThread = new Thread(() => new BLMSimulation().SetValue(setList[listindex]));
+                        indexThread.Start();
+                        blockThreads.Add(indexThread);
+                    }
+                }
+                foreach (Thread blockThread in blockThreads)
+                {
+                    blockThread.Join();
+                }
+                DateTime blockEnd = DateTime.Now;
+                TimeSpan blockTime = blockEnd - blockStart;
+                timeEstimates.Add(new TimeSpan(setCount / blockSize * blockTime.Ticks));
+                //}
+            }
             // Optimize for damage value first
             bool changesMade;
             bool changesThisSlot = false;
