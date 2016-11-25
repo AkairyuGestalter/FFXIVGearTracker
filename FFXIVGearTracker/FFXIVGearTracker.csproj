@@ -69,21 +69,10 @@
     <Compile Include="AddCharacterForm.Designer.cs">
       <DependentUpon>AddCharacterForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Character.cs">
+    <Compile Include="CustomEvents.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Common.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="CustomEvents.cs" />
-    <Compile Include="ExportImport.cs" />
-    <Compile Include="Food.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GearSet.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Item.cs">
+    <Compile Include="ExportImport.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="PopOutGearTableForm.cs">

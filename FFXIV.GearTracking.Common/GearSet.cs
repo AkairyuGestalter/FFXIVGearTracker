@@ -90,6 +90,7 @@ namespace FFXIV.GearTracking.Core
         public Statistics totalStats;
         public StatWeights gearWeights;
 		public int totalTomeCost;
+        public double DPSValue;
 
         public GearSet()
             : this(new Statistics())
@@ -171,6 +172,7 @@ namespace FFXIV.GearTracking.Core
 			newSet.totalStats = totalStats;
 			newSet.gearWeights = gearWeights;
 			newSet.totalTomeCost = totalTomeCost;
+            newSet.DPSValue = DPSValue;
 			return newSet;
 		}
     }
