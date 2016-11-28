@@ -165,6 +165,10 @@ namespace FFXIV.GearTracking.Simulation
 			int GCDs = 0;
 			return RunSimOnce(stats, out GCDs, ignoreResources);
 		}
+        public virtual double SetValue(GearSet set, bool recalculate = false)
+        {
+            return SetValue(set);
+        }
         public virtual double SetValue(GearSet set)
         {
             double dmgVal = RunSimOnce(set.totalStats, true);

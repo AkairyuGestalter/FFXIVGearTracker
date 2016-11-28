@@ -875,7 +875,7 @@ namespace FFXIV.GearTracking.WinForms
                     }
                     else if (c.Name.Contains("Value"))
                     {
-                        ((TextBox)c).Text = set.totalStats.Value(activeChar.currentWeights).ToString();
+                        ((TextBox)c).Text = set.DPSValue.ToString();
                     }
                     if (!(c.Name.Contains("Accuracy") || c.Name.Contains("Value")))
                     {
@@ -1136,6 +1136,7 @@ namespace FFXIV.GearTracking.WinForms
             else
             {
                 progressBar1.Maximum = max;
+                progressBar1.Value = 0;
                 progressBar1.Style = ProgressBarStyle.Continuous;
             }
         }
@@ -2674,72 +2675,80 @@ namespace FFXIV.GearTracking.WinForms
 
             GearSet oneSet = new GearSet();
             oneSet.baseStats = activeChar.idealDamage[(int)j].baseStats;
-            List<GearSet> setList = new List<GearSet>();
+            Dictionary<string, GearSet> setList = new Dictionary<string, GearSet>();
             int setCount = 0;
             foreach (Item mainHand in mainHands)
             {
-                if (maxiLevel - mainHand.itemStats.itemLevel <= 15)
+                if (maxiLevel - mainHand.itemStats.itemLevel <= 15 || ownedGearOnly)
                 {
                     oneSet.mainHand = mainHand;
                     foreach (Item head in heads)
                     {
-                        if (maxiLevel - head.itemStats.itemLevel <= 15)
+                        if (maxiLevel - head.itemStats.itemLevel <= 15 || ownedGearOnly)
                         {
                             oneSet.head = head;
                             foreach (Item body in bodies)
                             {
-                                if (maxiLevel - body.itemStats.itemLevel <= 15)
+                                if (maxiLevel - body.itemStats.itemLevel <= 15 || ownedGearOnly)
                                 {
                                     oneSet.body = body;
                                     foreach (Item hand in hands)
                                     {
-                                        if (maxiLevel - hand.itemStats.itemLevel <= 15)
+                                        if (maxiLevel - hand.itemStats.itemLevel <= 15 || ownedGearOnly)
                                         {
                                             oneSet.hands = hand;
                                             foreach (Item waist in waists)
                                             {
-                                                if (maxiLevel - waist.itemStats.itemLevel <= 15)
+                                                if (maxiLevel - waist.itemStats.itemLevel <= 15 || ownedGearOnly)
                                                 {
                                                     oneSet.waist = waist;
                                                     foreach (Item leg in legs)
                                                     {
-                                                        if (maxiLevel - leg.itemStats.itemLevel <= 15)
+                                                        if (maxiLevel - leg.itemStats.itemLevel <= 15 || ownedGearOnly)
                                                         {
                                                             oneSet.legs = leg;
                                                             foreach (Item foot in feet)
                                                             {
-                                                                if (maxiLevel - foot.itemStats.itemLevel <= 15)
+                                                                if (maxiLevel - foot.itemStats.itemLevel <= 15 || ownedGearOnly)
                                                                 {
                                                                     oneSet.feet = foot;
                                                                     foreach (Item neck in necks)
                                                                     {
-                                                                        if (maxiLevel - neck.itemStats.itemLevel <= 15)
+                                                                        if (maxiLevel - neck.itemStats.itemLevel <= 15 || ownedGearOnly)
                                                                         {
                                                                             oneSet.neck = neck;
                                                                             foreach (Item ear in ears)
                                                                             {
-                                                                                if (maxiLevel - ear.itemStats.itemLevel <= 15)
+                                                                                if (maxiLevel - ear.itemStats.itemLevel <= 15 || ownedGearOnly)
                                                                                 {
                                                                                     oneSet.ears = ear;
                                                                                     foreach (Item wrist in wrists)
                                                                                     {
-                                                                                        if (maxiLevel - wrist.itemStats.itemLevel <= 15)
+                                                                                        if (maxiLevel - wrist.itemStats.itemLevel <= 15 || ownedGearOnly)
                                                                                         {
                                                                                             oneSet.wrists = wrist;
                                                                                             for (int lringindex = 0; lringindex < rings.Count; lringindex++)
                                                                                             {
-                                                                                                if (maxiLevel - rings[lringindex].itemStats.itemLevel <= 15)
+                                                                                                if (maxiLevel - rings[lringindex].itemStats.itemLevel <= 15 || ownedGearOnly)
                                                                                                 {
                                                                                                     for (int rringindex = (rings[lringindex].unique ? lringindex + 1 : lringindex); rringindex < rings.Count; rringindex++)
                                                                                                     {
-                                                                                                        if (maxiLevel - rings[rringindex].itemStats.itemLevel <= 15)
+                                                                                                        if (maxiLevel - rings[rringindex].itemStats.itemLevel <= 15 || ownedGearOnly)
                                                                                                         {
                                                                                                             oneSet.leftRing = rings[lringindex];
                                                                                                             oneSet.rightRing = rings[rringindex];
                                                                                                             oneSet.CalcGearStats();
                                                                                                             oneSet.CalcTotalStats();
-                                                                                                            setList.Add(oneSet.Clone());
-                                                                                                            setCount++;
+                                                                                                            if (!setList.ContainsKey(oneSet.SetID()) && !Common.gearSetDict.ContainsKey(oneSet.SetID()))
+                                                                                                            {
+                                                                                                                setList.Add(oneSet.SetID(), oneSet.Clone());
+                                                                                                                setCount++;
+                                                                                                            }
+                                                                                                            else 
+                                                                                                            {
+                                                                                                                GearSet testSet;
+                                                                                                                setList.TryGetValue(oneSet.SetID(), out testSet);
+                                                                                                            }
                                                                                                         }
                                                                                                     }
                                                                                                 }
@@ -2764,36 +2773,73 @@ namespace FFXIV.GearTracking.WinForms
                     }
                 }
             }
-            //int blockSize = Environment.ProcessorCount - 5;
-            List<TimeSpan> timeEstimates = new List<TimeSpan>();
-            for (int blockSize = 1; blockSize < Environment.ProcessorCount; blockSize++)
+            int check = Common.gearSetDict.Values.Count;
+            if (setList.Values.Count > 0)
             {
-                //for (int blockIndex = 0; blockIndex * blockSize < setCount; blockIndex++)
-                //{
-                int blockIndex = 0;
-                DateTime blockStart = DateTime.Now;
-                List<Thread> blockThreads = new List<Thread>();
-                for (int setIndex = 0; setIndex < blockSize; setIndex++)
+                int blockSize = Environment.ProcessorCount - 2;
+                SetProgressBarMaximum(setList.Values.Count / blockSize);
+                for (int blockIndex = 0; blockIndex * blockSize < setList.Values.Count; blockIndex++)
                 {
-                    int listindex = blockIndex * blockSize + setIndex;
-                    if (listindex < setCount)
+                    //DateTime blockStart = DateTime.Now;
+                    List<Thread> blockThreads = new List<Thread>();
+                    for (int setIndex = 0; setIndex < blockSize; setIndex++)
                     {
-                        Thread indexThread = new Thread(() => new BLMSimulation().SetValue(setList[listindex]));
-                        indexThread.Start();
-                        blockThreads.Add(indexThread);
+                        int listindex = blockIndex * blockSize + setIndex;
+                        if (listindex < setList.Values.Count)
+                        {
+                            Thread indexThread = new Thread(() => new BLMSimulation().SetValue(setList.Values.ToArray()[listindex], false));
+                            indexThread.Start();
+                            blockThreads.Add(indexThread);
+                        }
+                    }
+                    foreach (Thread blockThread in blockThreads)
+                    {
+                        blockThread.Join();
+                    }
+                    //DateTime blockEnd = DateTime.Now;
+                    //TimeSpan blockTime = blockEnd - blockStart;
+                    IncrementProgressBar();
+                }
+                StartProgressBar();
+            }
+            foreach (GearSet set in setList.Values.ToList())
+            {
+                if (!Common.gearSetDict.ContainsKey(set.SetID()))
+                {
+                    Common.gearSetDict.Add(set.SetID(), set);
+                }
+            }
+            List<GearSet> bestSets = new List<GearSet>();
+            foreach (GearSet checkset in Common.gearSetDict.Values.ToList())
+            {
+                if (checkset.totalStats.acc >= accReq)
+                {
+                    if (ownedGearOnly && !(activeChar.ownedItems.Contains(checkset.mainHand.name) && activeChar.ownedItems.Contains(checkset.head.name) && activeChar.ownedItems.Contains(checkset.body.name) &&
+                        activeChar.ownedItems.Contains(checkset.hands.name) && activeChar.ownedItems.Contains(checkset.waist.name) && activeChar.ownedItems.Contains(checkset.legs.name)  &&
+                        activeChar.ownedItems.Contains(checkset.feet.name) && activeChar.ownedItems.Contains(checkset.neck.name) && activeChar.ownedItems.Contains(checkset.wrists.name) &&
+                        activeChar.ownedItems.Contains(checkset.leftRing.name) && activeChar.ownedItems.Contains(checkset.rightRing.name) && activeChar.ownedItems.Contains(checkset.ears.name)))
+                    {
+                        continue;
+                    }
+                    if (bestSets.Count == 0)
+                    {
+                        bestSets.Add(checkset);
+                    }
+                    else if (checkset.DPSValue > bestSets[0].DPSValue)
+                    {
+                        bestSets.Clear();
+                        bestSets.Add(checkset);
+                    }
+                    else if (checkset.DPSValue == bestSets[0].DPSValue)
+                    {
+                        bestSets.Add(checkset);
                     }
                 }
-                foreach (Thread blockThread in blockThreads)
-                {
-                    blockThread.Join();
-                }
-                DateTime blockEnd = DateTime.Now;
-                TimeSpan blockTime = blockEnd - blockStart;
-                timeEstimates.Add(new TimeSpan(setCount / blockSize * blockTime.Ticks));
-                //}
             }
+            GearSet bestSet = bestSets[0].Clone();
+            GearSet tempSet = new GearSet();
             // Optimize for damage value first
-            bool changesMade;
+            /*bool changesMade;
             bool changesThisSlot = false;
             int iterations = 0;
             GearSet tempSet;
@@ -3085,7 +3131,7 @@ namespace FFXIV.GearTracking.WinForms
                 prevSet2 = prevSet.Clone();
                 prevSet = tempSet.Clone();
             } while (changesMade && iterations < 5);
-
+            */
             bestSet.meal = startSet.meal;
             tempSet = bestSet.Clone();
             bool needSpeed = (speedBreakPoint > 341 && tempSet.totalStats.speed < speedBreakPoint);

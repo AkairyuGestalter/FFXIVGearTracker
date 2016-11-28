@@ -927,9 +927,13 @@ namespace FFXIV.GearTracking.Simulation
             simTime = totalTime / SimIterations;
             return totalDmg / totalTime;
         }
-        public override double SetValue(GearSet set)
+        public override double SetValue(GearSet set, bool recalculate = false)
         {
-            return RunEventSimOnce(set.totalStats);
+            if (set.DPSValue == 0 || recalculate)
+            {
+                set.DPSValue = RunEventSimOnce(set.totalStats);
+            }
+            return set.DPSValue;
         }
 
         public enum SpellType

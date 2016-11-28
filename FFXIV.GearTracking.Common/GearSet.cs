@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using NCalc;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Security.Cryptography;
 using System.IO;
 
 namespace FFXIV.GearTracking.Core
@@ -144,11 +145,24 @@ namespace FFXIV.GearTracking.Core
 		public bool IsEqual(GearSet compareSet)
 		{
 			if (mainHand == compareSet.mainHand && offHand == compareSet.offHand && head == compareSet.head && body == compareSet.body && hands == compareSet.hands &&
-				waist == compareSet.waist && legs == compareSet.legs && feet == compareSet.feet && neck == compareSet.neck && ears == compareSet.ears && leftRing == compareSet.leftRing &&
+				waist == compareSet.waist && legs == compareSet.legs && feet == compareSet.feet && neck == compareSet.neck && ears == compareSet.ears && wrists == compareSet.wrists && leftRing == compareSet.leftRing &&
 				rightRing == compareSet.rightRing && meal == compareSet.meal)
 				return true;
 			return false;
 		}
+
+        public string SetID()
+        {
+            string setIDstring = mainHand.name + offHand.name + head.name + body.name + hands.name + waist.name + legs.name + feet.name + neck.name + ears.name + wrists.name + leftRing.name + rightRing.name + meal.name;
+            SHA256Managed crypt = new SHA256Managed();
+            StringBuilder hash = new StringBuilder();
+            byte[] crypto = crypt.ComputeHash(Encoding.UTF8.GetBytes(setIDstring), 0, Encoding.UTF8.GetByteCount(setIDstring));
+            foreach (byte b in crypto)
+            {
+                hash.Append(b.ToString("x2"));
+            }
+            return hash.ToString();
+        }
 
 		public GearSet Clone()
 		{

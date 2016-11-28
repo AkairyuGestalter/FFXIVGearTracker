@@ -123,6 +123,7 @@ namespace FFXIV.GearTracking.Core
         public static Dictionary<string, Character> charDictionary = new Dictionary<string, Character>();
         public static ObservableCollection<Item> gearDictWPF = new ObservableCollection<Item>();
         public static ObservableCollection<Character> charDictWPF = new ObservableCollection<Character>();
+        public static Dictionary<string, GearSet> gearSetDict = new Dictionary<string, GearSet>();
         public ObservableCollection<Item> GearDictionary
         {
             get
